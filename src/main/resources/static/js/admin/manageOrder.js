@@ -33,7 +33,7 @@ $(document).ready(function () {
                         '<td>' + order.orderDate + '</td>' +
                         '<td>' + order.deliveryDate + '</td>' +
                         '<td>' + order.receivedDate + '</td>' +
-                        '<td>' + '<input type="hidden" class="donHangId" value=' + order.id + '>' + '</td>' +
+                        '<td>' + '<input type="hidden" class="orderID" value=' + order.id + '>' + '</td>' +
                         '<td><button class="btn btn-warning btnOrderDetail" >Details</button>';
                     if (order.orderStatus === "Waiting for Delivery" || order.orderStatus === "Delivering") {
                         orderEntry += ' &nbsp;<button class="btn btn-primary btnAssignDeliverer">Assign</button>' +
@@ -50,21 +50,8 @@ $(document).ready(function () {
                         }
                     });
                 });
+                renderPagination(page, result.totalPages);
 
-                if (result.totalPages > 1) {
-                    for (let numberPage = 1; numberPage <= result.totalPages; numberPage++) {
-                        const li = '<li class="page-item "><a class="pageNumber">' + numberPage + '</a></li>';
-                        $('.pagination').append(li);
-                    }
-
-
-                    // active page pagination
-                    $(".pageNumber").each(function (index) {
-                        if ($(this).text() === page) {
-                            $(this).parent().removeClass().addClass("page-item active");
-                        }
-                    });
-                }
             },
             error: function (e) {
                 alert("Error fetching orders from db! ");
@@ -78,26 +65,25 @@ $(document).ready(function () {
     $(document).on('click', '.btnAssignDeliverer', function (event) {
         event.preventDefault();
         const orderID = $(this).parent().prev().children().val();
-        $("#donHangId").val(orderID);
+        $("#orderID").val(orderID);
         console.log(orderID);
         $("#phanCongModal").modal();
     });
 
     $(document).on('click', '#btnAssignDelivererSubmit', function (event) {
+        // find select element with name = deliver
         const email = $("select[name=deliver]").val();
-        const orderID = $("#donHangId").val();
-        console.log(orderID);
-        ajaxPostPhanCongDonHang(email, orderID)
-
+        const orderID = $("#orderID").val();
+        postAssignOrderForDelivery(email, orderID)
     });
 
-    function ajaxPostPhanCongDonHang(email, orderID) {
+    function postAssignOrderForDelivery(email, orderID) {
 
         $.ajax({
             async: false,
             type: "POST",
             contentType: "application/json",
-            url: "http://localhost:8080/api/order/assign?deliver=" + email + "&orderID=" + orderID,
+            url: "http://localhost:8080/api/order/assign?deliverEmail=" + email + "&orderID=" + orderID,
             enctype: 'multipart/form-data',
 
             success: function (response) {
@@ -141,22 +127,21 @@ $(document).ready(function () {
         event.preventDefault();
 
         const orderID = $(this).parent().prev().children().val();
-//		console.log(donHangId);
         const href = "http://localhost:8080/api/order/" + orderID;
         $.get(href, function (order) {
-            $('#maDonHang').text("Order ID: " + order.id);
-            $('#hoTenNguoiNhan').text("Người nhận: " + order.receiver);
-            $('#sdtNhanHang').text("Phone num.: " + order.receivedPhone);
-            $('#diaChiNhan').text("Address: " + order.receiveAddress);
-            $('#trangThaiDonHang').text("Order status:" + order.orderStatus);
-            $("#ngayDatHang").text("Order date: " + order.orderDate);
+            $('#orderID').text("Order ID: " + order.id);
+            $('#receveiverName').text("Receiver:  " + order.receiver);
+            $('#receveiverPhoneNum').text("Phone num.: " + order.receivedPhone);
+            $('#receveiverAddress').text("Address: " + order.receiveAddress);
+            $('#orderStatus').text("Order status: " + order.orderStatus);
+            $("#orderPlacementDate").text("Order date: " + order.orderDate);
 
             if (order.deliveryDate != null) {
-                $("#ngayShipHang").text("Delivery date: " + order.deliveryDate);
+                $("#deliveryDate").text("Delivery date: " + order.deliveryDate);
             }
 
             if (order.receivedDate != null) {
-                $("#ngayNhanHang").text("Retrieval date: " + order.receivedDate);
+                $("#orderRetrievalDate").text("Retrieval date: " + order.receivedDate);
             }
 
             if (order.note != null) {
@@ -164,7 +149,7 @@ $(document).ready(function () {
             }
 
             if (order.orderer != null) {
-                $("#nguoiDat").html("<strong>Ordering party</strong>:  " + order.orderer.fullName);
+                $("#orderer").html("<strong>Ordering party</strong>:  " + order.orderer.fullName);
             }
 
             if (order.deliver != null) {
@@ -173,7 +158,8 @@ $(document).ready(function () {
 
             const check = order.orderStatus === "Completed" || order.orderStatus === "Waiting for approval";
             if (check) {
-                $('.chiTietTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Receiving quantity</th>');
+                $('.detailTable').find('thead tr')
+                    .append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Received</th>');
             }
             // add table
             let sum = 0; // order gross value
@@ -192,13 +178,13 @@ $(document).ready(function () {
                     sum += details.cost * details.orderQuantity;
                 }
 
-                $('.chiTietTable tbody').append(rowDetails);
+                $('.detailTable tbody').append(rowDetails);
                 no++;
             });
 
             $("#tongTien").text("Total: " + sum);
         });
-        $("#chiTietModal").modal();
+        $("#modalDetail").modal();
     });
 
 
@@ -234,7 +220,7 @@ $(document).ready(function () {
                     '<td>' + order.orderDate + '</td>' +
                     '<td>' + order.deliveryDate + '</td>' +
                     '<td>' + order.receivedDate + '</td>' +
-                    '<td>' + '<input type="hidden" id="donHangId" value=' + order.id + '>' + '</td>' +
+                    '<td>' + '<input type="hidden" id="orderID" value=' + order.id + '>' + '</td>' +
                     '<td><button class="btn btn-primary btnOrderDetail" >Detail</button>';
 
                 if (order.orderStatus === "Waiting for Delivery" || order.orderStatus === "Delivering") {
@@ -272,19 +258,19 @@ $(document).ready(function () {
                     '<td>' + details.orderQuantity + '</td>' +
                     '<td>' + details.receivedQuantity + '</td>' +
                     '<td><input type="hidden" value="' + details.id + '" ></td>';
-                $('.chiTietTable tbody').append(rowDetails);
+                $('.detailTable tbody').append(rowDetails);
                 no++;
             });
             var sum = 0;
             $.each(order.orderDetailsList, function (i, details) {
                 sum += details.cost * details.receivedQuantity;
             });
-            $("#tongTienXacNhan").text("Total: " + sum);
+            $("#totalValue").text("Total: " + sum);
         });
-        $("#capNhatTrangThaiModal").modal();
+        $("#modalUpdateStatus").modal();
     });
 
-    $(document).on('click', '#btnXacNhan', function (event) {
+    $(document).on('click', '#btnConfirm', function (event) {
         event.preventDefault();
         postCompletionConfirm();
         resetData();
@@ -299,7 +285,7 @@ $(document).ready(function () {
             url: "http://localhost:8080/api/order/update?orderID=" + $("#idDonHangXacNhan").val() + "&adminNote=" + $("#ghiChuAdmin").val(),
             enctype: 'multipart/form-data',
             success: function (response) {
-                $("#capNhatTrangThaiModal").modal('hide');
+                $("#modalUpdateStatus").modal('hide');
                 alert("Confirming order completion successfully");
             },
             error: function (e) {
@@ -337,13 +323,13 @@ $(document).ready(function () {
     }
 
     // event when hiding detail modal
-    $('#chiTietModal,#capNhatTrangThaiModal').on('hidden.bs.modal', function (e) {
+    $('#modalDetail,#modalUpdateStatus').on('hidden.bs.modal', function (e) {
         e.preventDefault();
         $("#formDetail p").html(""); // reset p tags
         $("#capNhatTrangThaiForm h4").text("");
         $("#ghiChuAdmin").text("");
-        $('.chiTietTable #soLuongNhanTag').remove();
-        $('.chiTietTable tbody tr').remove();
+        $('.detailTable #soLuongNhanTag').remove();
+        $('.detailTable tbody tr').remove();
         $('.chiTietCapNhatTable tbody tr').remove();
     });
 });

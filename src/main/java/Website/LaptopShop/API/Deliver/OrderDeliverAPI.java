@@ -17,7 +17,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/deliver/order")
-public class OrderDeliverApi {
+public class OrderDeliverAPI {
     @Autowired
     private OrderService orderService;
 
@@ -25,9 +25,11 @@ public class OrderDeliverApi {
     private UserService userService;
 
     @GetMapping("/all")
-    public Page<Orders> getOrderByFilter(@RequestParam(defaultValue = "1") int page, @RequestParam String status,
-                                         @RequestParam String fromDate, @RequestParam String toDate, @RequestParam long deliverID)
-            throws ParseException {
+    public Page<Orders> getOrderByFilter(@RequestParam(defaultValue = "1") int page,
+                                         @RequestParam String status,
+                                         @RequestParam String fromDate,
+                                         @RequestParam String toDate,
+                                         @RequestParam long deliverID) throws ParseException {
 
         SearchOrderObject object = new SearchOrderObject();
         object.setToDate(toDate);
@@ -35,8 +37,7 @@ public class OrderDeliverApi {
         object.setFromDate(fromDate);
 
         Users deliver = userService.findById(deliverID);
-        Page<Orders> orderList = orderService.findOrderByDeliver(object, page, 6, deliver);
-        return orderList;
+        return orderService.findOrderByDeliver(object, page, deliver);
     }
 
     @GetMapping("/{id}")
@@ -49,8 +50,7 @@ public class OrderDeliverApi {
         Orders order = orderService.findById(updateOrderDeliver.getOrderID());
 
         for (OrderDetails details : order.getOrderDetailsList()) {
-            for (UpdateOrderDeliver.UpdateOrderDetails updateDetails : updateOrderDeliver
-                    .getUpdateOrderDetailsList()) {
+            for (UpdateOrderDeliver.UpdateOrderDetails updateDetails : updateOrderDeliver.getUpdateOrderDetailsList()) {
                 if (details.getId() == updateDetails.getDetailsID()) {
                     details.setReceivedQuantity(updateDetails.getReceivedQuantity());
                 }
@@ -68,11 +68,10 @@ public class OrderDeliverApi {
         }
 
         order.setOrderStatus("Waiting for approval");
+        String note = updateOrderDeliver.getDeliverNote();
 
-        String ghiChu = updateOrderDeliver.getDeliverNote();
-
-        if (!ghiChu.equals("")) {
-            order.setNote("Deliver's note: \n" + updateOrderDeliver.getDeliverNote());
+        if (!note.equals("")) {
+            order.setNote("Delivery note: \n" + updateOrderDeliver.getDeliverNote());
         }
         orderService.save(order);
 

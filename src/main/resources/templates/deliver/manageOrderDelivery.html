@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta charset="ISO-8859-1">
+	<link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
+	<title>Order Management</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!--TODO: update `to latest version-->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<!--TODO: redundant?-->
+	<style>
+        .form-chiTiet input {
+            border: 0;
+        }
+	</style>
+</head>
+<body>
+<div th:insert="~{/deliver/include/sidebar}"></div>
+<script th:src="@{/js/Deliver/manageOrderDelivery.js}"></script>
+
+<div class="col-md-11 animated bounce" style="padding-left: 75px;">
+	<h3 class="page-header form-inline">Delivery Order Management</h3>
+
+	<form class="form-inline" id="searchForm" name="searchObject">
+		<input id="idShipper" type="hidden" th:value="${loggedInUser.id}">
+		<select class="form-control" id="trangThai">
+			<option value="Delivering">Delivering</option>
+			<option value="Waiting for Delivery">Waiting for Delivery</option>
+			<option value="Completed">Completed</option>
+		</select>
+
+		<div class="form-group">
+			<input class="form-control" type="text" id="fromDate"
+				   placeholder="From">
+		</div>
+
+		<div class="form-group">
+			<input class="form-control" type="text" id="toDate"
+				   placeholder="To">
+		</div>
+		&nbsp;&nbsp; &nbsp;&nbsp;
+		<button type="button" class="btn btn-primary" id="btnDuyetDonHang">Browse</button>
+		<div class="form-group" style="float: right; margin-right: 20px">
+			<input class="form-control" type="number" id="searchById"
+				   placeholder="Enter ID to search"> <span
+				class="glyphicon glyphicon-search" aria-hidden="true"
+				style="left: -30px; top: 4px"></span>
+		</div>
+	</form>
+
+	<hr/>
+	<table class="table table-hover donHangTable"
+		   style="text-align: center">
+		<thead>
+		<tr>
+			<th>ID</th>
+			<th>Receiver</th>
+			<th>Status</th>
+			<th>Cost</th>
+			<th>Order date</th>
+			<th>Deliver date</th>
+			<th>Receive date</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		</tbody>
+
+	</table>
+
+	<ul class="pagination">
+	</ul>
+</div>
+
+<div class="row col-md-6">
+	<form class="chiTietForm">
+		<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog"
+			 aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog " role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<p class="h4 modal-title" id="orderID"></p>
+						<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-12">
+								<div class="card" style="padding: 40px">
+									<div class="row pb-5 p-5">
+										<div class="col-md-6">
+											<h5 class="font-weight-bold mb-4">
+												<strong>Customer Info</strong>
+											</h5>
+											<p class="mb-1" id="receveiverName"></p>
+											<p class="mb-1" id="receveiverAddress"></p>
+											<p class="mb-1" id="receveiverPhoneNum"></p>
+										</div>
+
+										<div class="col-md-6 text-right"
+											 style="padding-left: 65px; text-align: left">
+											<h5 class="font-weight-bold mb-4">
+												<strong>Order Info</strong>
+											</h5>
+											<p class="mb-1" id="orderStatus"></p>
+											<p class="mb-1" id="orderPlacementDate"></p>
+											<p class="mb-1" id="deliveryDate"></p>
+											<p class="mb-1" id="orderRetrievalDate"></p>
+										</div>
+									</div>
+									<hr/>
+									<div class="row p-5">
+										<div class="col-md-12">
+											<table class="table detailTable"
+												   style="text-align: center;">
+												<thead>
+												<tr>
+													<th class="border-0 text-uppercase small font-weight-bold">
+														No
+													</th>
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Product Name
+													</th>
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Price
+													</th>
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Quantity
+													</th>
+												</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+									<div class="d-flex flex-row-reverse bg-dark text-white p-4">
+										<div class="py-3 px-5 text-right">
+											<div class="mb-2">
+												<p id="tongTien"></p>
+											</div>
+										</div>
+									</div>
+									<hr/>
+
+									<div class="col-md-6">
+										<h5 class="font-weight-bold mb-4">
+											<strong>Additional info</strong>
+										</h5>
+										<p class="mb-1" id="shipper"></p>
+										<p class="mb-1" id="nguoiDat"></p>
+										<p class="mb-1" id="ghiChu"></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Total
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="row col-md-6">
+	<form class="capNhatTrangThaiForm" id="form">
+		<div>
+			<div class="modal fade" id="modalUpdateStatus" tabindex="-1"
+				 role="dialog" aria-labelledby="exampleModalLabel"
+				 aria-hidden="true" data-backdrop="static" data-keyboard="false">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Update order status</h5>
+							<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<input type="hidden" id="donHangId" value="">
+							</div>
+							<div class="form-group">
+								<div class="col-md-12">
+									<table class="table chiTietCapNhatTable"
+										   style="text-align: center;">
+										<thead>
+										<tr>
+											<th class="border-0 text-uppercase small font-weight-bold">No.</th>
+											<th class="border-0 text-uppercase small font-weight-bold">Product name</th>
+											<th class="border-0 text-uppercase small font-weight-bold">Price</th>
+											<th class="border-0 text-uppercase small font-weight-bold">Quantity
+												ordered
+											</th>
+											<th class="border-0 text-uppercase small font-weight-bold">Quantity
+												received
+											</th>
+										</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+									<h4 id="tongTienCapNhat"
+										style="float: right; font-weight: bold;padding-right: 50px"></h4>
+								</div>
+
+								<div>
+									<h5 id="ghiChu" style="font-weight: bold; padding-top: 10px">Note</h5>
+									<textarea id="delivererNote" style="top: 50%;width: 100%"></textarea>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<input class="btn btn-primary" id="btnConfirm" type="button"
+									   value="Confirm"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        const to = $("#toDate").datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true
+        }).on("change", function () {
+            from.datepicker("option", "maxDate", getDate(this));
+        });
+
+        const status = /*[[${#request.getParameter('status')}]]*/ 'null';
+        if (status !== null) {
+            $("#trangThai").val(status);
+            console.log(status);
+        }
+
+        const from = $("#fromDate").datepicker({
+            dateFormat: "dd-mm-yy",
+            changeMonth: true
+        }).on("change", function () {
+            to.datepicker("option", "minDate", getDate(this));
+        });
+
+        function getDate(element) {
+            let date;
+            const dateFormat = "dd-mm-yy";
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+
+            return date;
+        }
+    });
+</script>
+</body>
+</html>

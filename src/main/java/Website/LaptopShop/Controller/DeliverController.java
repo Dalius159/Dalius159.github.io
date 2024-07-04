@@ -34,7 +34,7 @@ public class DeliverController {
 
     @GetMapping(value= {"", "/order"})
     public String deliverPage(Model model) {
-        return "deliver/manageOrder";
+        return "deliver/manageOrderDelivery";
     }
 
     @GetMapping("/profile")

@@ -1,65 +1,72 @@
-import {Chart} from "../chart.min";
+window.onload = function() {
+    let data = [];
+    const labels = [];
+    const dataForDataSets = [];
 
-window.onload = function () {
-    fetch("http://localhost:8080/laptopshop/api/order/report")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response error')
-            }
-            return response.json();
-        })
-        .then(data => {
-            let label = [];
-            let dataForDataSets = [];
-
+    $.ajax({
+        async: false,
+        type: "GET",
+        data: data,
+        contentType: "application/json",
+        url: "http://localhost:8080/api/order/report",
+        success: function(data) {
             for (let i = 0; i < data.length; i++) {
-                label.push(data[i][0] + "/" + data[i][1]);
+                labels.push(data[i][0] + "/" + data[i][1]);
                 dataForDataSets.push(data[i][2] / 1000000);
             }
+        },
+        error: function(e) {
+            alert("Error: ", e);
+            console.log("Error", e);
+        }
+    });
 
-            const canvas = document.getElementById('myChart');
-            const chartData = {
-                labels: label,
-                datasets: [{
-                    label: "Total value",
-                    backgroundColor: "#0000ff",
-                    borderColor: "#0000ff",
-                    borderWidth: 2,
-                    hoverBackgroundColor: "#0043ff",
-                    hoverBorderColor: "#0043ff",
-                    data: dataForDataSets,
-                }]
-            };
-            const options = {
-                scales: {
-                    yAxes: [{
-                        stacked: true,
-                        gridLines: {
-                            display: true,
-                            color: "rgba(255,99,132,0.2)"
-                        }
-                    }],
-                    xAxes: [{
-                        barPercentage: 0.5,
-                        gridLines: {display: false}
-                    }]
-                },
-                maintainAspectRatio: false,
-                legend: {
-                    labels: {
-                        fontSize: 20 // override global
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    const chartData = {
+        labels: labels,
+        datasets: [{
+            label: "Total value",
+            backgroundColor: "#0000ff",
+            borderColor: "#0000ff",
+            borderWidth: 2,
+            hoverBackgroundColor: "#0043ff",
+            hoverBorderColor: "#0043ff",
+            data: dataForDataSets,
+        }]
+    };
+
+    const chartOptions = {
+        scales: {
+            y: {
+                stacked: true,
+                grid: {
+                    display: true,
+                    color: "rgba(255,99,132,0.2)"
+                }
+            },
+            x: {
+                barPercentage: 0.5,
+                grid: {
+                    display: false
+                }
+            }
+        },
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    font: {
+                        size: 20
                     }
                 }
-            };
+            }
+        }
+    };
 
-            new Chart(canvas.getContext('2d'), {
-                type: 'bar',
-                data: chartData,
-                options: options
-            });
-
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    const myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: chartOptions
+    });
 }

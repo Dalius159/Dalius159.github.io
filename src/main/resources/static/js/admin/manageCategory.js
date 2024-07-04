@@ -41,20 +41,8 @@ $(document).ready(function () {
                         '</tr>';
                     $('.categoryTable tbody').append(rowCategory);
                 });
+                renderPagination(page, result.totalPages);
 
-                if (result.totalPages > 1) {
-                    for (let numberPage = 1; numberPage <= result.totalPages; numberPage++) {
-                        const li = '<li class="page-item "><a class="pageNumber text-white">More</a></li>';
-                        $('.pagination').append(li);
-                    }
-
-                    // active page pagination
-                    $(".pageNumber").each(function () {
-                        if ($(this).text() === page) {
-                            $(this).parent().removeClass().addClass("page-item active");
-                        }
-                    });
-                }
             },
             error: function (e) {
                 alert("Error fetching category table!");

@@ -27,23 +27,8 @@ $(document).ready(function () {
                     productRow += '  <button class="btn btn-danger btnDeleteProduct">Delete</button></td>' + '</tr>';
                     $('.productTable tbody').append(productRow);
                 });
-
-                if (result.totalPages > 1) {
-                    for (let numberPage = 1; numberPage <= result.totalPages; numberPage++) {
-                        const li = '<li class="page-item "><a class="pageNumber">' + numberPage + '</a></li>';
-                        $('.pagination').append(li);
-                    }
-                    ;
-
-
-                    // active page pagination
-                    $(".pageNumber").each(function (index) {
-                        if ($(this).text() === page) {
-                            $(this).parent().removeClass().addClass("page-item active");
-                        }
-                    });
-                }
-                ;
+                // Pagination
+                renderPagination(page, result.totalPages);
             },
             error: function (e) {
                 alert("Error: ", e);
@@ -394,7 +379,7 @@ $(document).ready(function () {
             $('.salesUnit').html("<span style='font-weight: bold'>Sold: </span>" + product.salesUnit);
         });
 
-        $('#chiTietModal').modal('show');
+        $('#modalDetail').modal('show');
 
     });
 
@@ -419,7 +404,7 @@ $(document).ready(function () {
         $('.productTable tbody tr').remove();
         $('.pagination li').remove();
         getAllProducts(page);
-    };
+    }
 
     // event - clicking on product pagination
     $(document).on('click', '.pageNumber', function (event) {
@@ -469,7 +454,7 @@ $(document).ready(function () {
     }
 
     // event - hide detail modal
-    $('#chiTietModal').on('hidden.bs.modal', function (e) {
+    $('#modalDetail').on('hidden.bs.modal', function (e) {
         e.preventDefault();
         $(".formDetail p").text(""); // reset p tag
     });

@@ -54,23 +54,9 @@ $(document).ready(function(){
         });
     }
 
-    // Function to render pagination
-    function renderPagination(currentPage, totalPages) {
-        $('.pagination').empty(); // Clear pagination before rendering
-
-        var prevDisabled = (currentPage === 1) ? 'disabled' : '';
-        var nextDisabled = (currentPage === totalPages) ? 'disabled' : '';
-
-        for(var numberPage = 1; numberPage <= totalPages; numberPage++) {
-            var liClass = (numberPage === currentPage) ? 'page-item active' : 'page-item';
-            var li = '<li class="' + liClass + '"><a class="page-link pageNumber" href="#" data-page="' + numberPage + '">' + numberPage + '</a></li>';
-            $('.pagination').append(li);
-        }
-    }
-
     $(document).on('click', '.pageNumber', function (event){
         event.preventDefault();
-        var page = $(this).data('page');
+        const page = $(this).data('page');
         ajaxGet(page);
     });
 

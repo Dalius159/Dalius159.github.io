@@ -100,7 +100,7 @@ public class AdminController {
     @GetMapping("/order")
     public String manageOrderPage(Model model) {
         Set<Roles> role = new HashSet<>();
-        role.add(roleService.findByRoleName("DELIVER"));
+        role.add(roleService.findByRoleName("ROLE_DELIVER"));
         List<Users> delivers = userService.getUserByRole(role);
         for (Users deliver : delivers) {
             deliver.setListOrders(orderService.findByOrderStatusAndDeliver("Delivering", deliver));
