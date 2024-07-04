@@ -23,6 +23,16 @@
 				qrCodeContainer.innerHTML += '<p><b>QR URL: </b><a href="' + qrUrl + '" target="_blank">' + qrUrl + '</a></p>';
 			}
 
+			// Set current date and time
+			const now = new Date();
+			const formattedDate = now.getFullYear().toString() +
+					'-' + ('0' + (now.getMonth() + 1)).slice(-2) +
+					'-' + ('0' + now.getDate()).slice(-2) +
+					' ' + ('0' + now.getHours()).slice(-2) +
+					':' + ('0' + now.getMinutes()).slice(-2) +
+					':' + ('0' + now.getSeconds()).slice(-2);
+			document.getElementById('currentDateTime').textContent = formattedDate;
+
 			let checkPaidInterval;
 			setTimeout(() => { checkPaidInterval = setInterval(checkPaid, 1000); }, 20000);
 			let isSuccess = false;
@@ -76,10 +86,10 @@
 <body>
 <div th:insert="~{/client/include/homeHeader}"></div>
 <form id="hiddenOrderForm" th:action="@{/process_order}" style="display: none;">
-	<input type="hidden" name="orderId" th:value="${order.getId()}">
-	<input type="hidden" name="receiver" th:value="${order.getReceiver()}">
-	<input type="hidden" name="receivedPhone" th:value="${order.getReceivedPhone()}">
-	<input type="hidden" name="receiveAddress" th:value="${order.getReceiveAddress()}">
+	<input type="hidden" name="orderId" th:value="${order.id}">
+	<input type="hidden" name="receiver" th:value="${order.receiver}">
+	<input type="hidden" name="receivedPhone" th:value="${order.receivedPhone}">
+	<input type="hidden" name="receiveAddress" th:value="${order.receiveAddress}">
 	<!-- Thêm các thông tin cần thiết khác vào đây -->
 </form>
 <div class="container">
@@ -91,10 +101,10 @@
 		<div class="col-md-12 center">
 			<br>
 			<div class="order-details">
-				<p><b>Recipient's Name: </b><span th:text="${order.getReceiver()}"></span></p>
-				<p><b>Phone Number: </b><span th:text="${order.getReceivedPhone()}"></span></p>
-				<p><b>Address: </b><span th:text="${order.getReceiveAddress()}"></span></p>
-				<p>At <span th:text="${#dates.format(currentDate, 'yyyy-MM-dd HH:mm:ss')}"></span>, we received an order with the following products:</p>
+				<p><b>Recipient's Name: </b><span th:text="${order.receiver}"></span></p>
+				<p><b>Phone Number: </b><span th:text="${order.receivedPhone}"></span></p>
+				<p><b>Address: </b><span th:text="${order.receiveAddress}"></span></p>
+				<p>At <span id="currentDateTime"></span>, we received an order with the following products:</p>
 			</div>
 			<br>
 			<table class="table-cart-checkout">

@@ -80,6 +80,7 @@ public class CheckOutController {
 		List<Product> productList = new ArrayList<>();
 
 		Cart g = cartService.getCartByUser(currentUser);
+
 		List<CartPointer> cartPointerList = cartPointerService.getCartPointerByCart(g);
 
 		for (CartPointer c : cartPointerList) {
@@ -91,7 +92,6 @@ public class CheckOutController {
 		model.addAttribute("quantity", quantity);
 		model.addAttribute("user", currentUser);
 		model.addAttribute("order", order);
-		model.addAttribute("currentDate", new Date());
 
 		return "client/processPayment";
 	}
