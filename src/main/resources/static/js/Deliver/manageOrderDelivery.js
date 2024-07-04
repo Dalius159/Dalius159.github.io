@@ -65,7 +65,7 @@ $(document).ready(function () {
                 ;
             },
             error: function (e) {
-                alert("Error: get request for /all orders");
+                alert("Error: while getting request for /all orders");
                 console.log("Error", e);
             }
         });
@@ -146,7 +146,7 @@ $(document).ready(function () {
             }
 
             if (order.receivedDate != null) {
-                $("#orderReceivalDate").text("Retrieval date: " + order.receivedDate);
+                $("#orderRetrievalDate").text("Retrieval date: " + order.receivedDate);
             }
 
             if (order.note != null) {
@@ -163,7 +163,8 @@ $(document).ready(function () {
 
             const check = order.orderStatus === "Completed" || order.orderStatus === "Waiting for approval";
             if (check) {
-                $('.detailTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold"> SỐ LƯỢNG NHẬN </th>');
+                $('.detailTable').find('thead tr')
+                    .append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Received</th>');
             }
             let sum = 0;
             let no = 1;
@@ -263,7 +264,7 @@ $(document).ready(function () {
 
         const data = {
             orderID: $("#donHangId").val(),
-            deliverNote: $("#ghiChuShipper").val(),
+            deliverNote: $("#delivererNote").val(),
             updateOrderDetailsList: detailsList
         };
 //    	 console.log(data);

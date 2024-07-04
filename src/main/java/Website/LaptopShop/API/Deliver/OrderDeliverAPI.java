@@ -37,7 +37,7 @@ public class OrderDeliverAPI {
         object.setFromDate(fromDate);
 
         Users deliver = userService.findById(deliverID);
-        return orderService.findOrderByDeliver(object, page, 6, deliver);
+        return orderService.findOrderByDeliver(object, page, deliver);
     }
 
     @GetMapping("/{id}")
@@ -50,8 +50,7 @@ public class OrderDeliverAPI {
         Orders order = orderService.findById(updateOrderDeliver.getOrderID());
 
         for (OrderDetails details : order.getOrderDetailsList()) {
-            for (UpdateOrderDeliver.UpdateOrderDetails updateDetails : updateOrderDeliver
-                    .getUpdateOrderDetailsList()) {
+            for (UpdateOrderDeliver.UpdateOrderDetails updateDetails : updateOrderDeliver.getUpdateOrderDetailsList()) {
                 if (details.getId() == updateDetails.getDetailsID()) {
                     details.setReceivedQuantity(updateDetails.getReceivedQuantity());
                 }
@@ -69,11 +68,10 @@ public class OrderDeliverAPI {
         }
 
         order.setOrderStatus("Waiting for approval");
+        String note = updateOrderDeliver.getDeliverNote();
 
-        String ghiChu = updateOrderDeliver.getDeliverNote();
-
-        if (!ghiChu.equals("")) {
-            order.setNote("Deliver's note: \n" + updateOrderDeliver.getDeliverNote());
+        if (!note.equals("")) {
+            order.setNote("Delivery note: \n" + updateOrderDeliver.getDeliverNote());
         }
         orderService.save(order);
 

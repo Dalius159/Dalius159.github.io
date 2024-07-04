@@ -20,7 +20,7 @@
 <script th:src="@{/js/Deliver/manageOrderDelivery.js}"></script>
 
 <div class="col-md-11 animated bounce" style="padding-left: 75px;">
-	<h3 class="page-header form-inline"> Shipper Order</h3>
+	<h3 class="page-header form-inline">Delivery Order Management</h3>
 
 	<form class="form-inline" id="searchForm" name="searchObject">
 		<input id="idShipper" type="hidden" th:value="${loggedInUser.id}">
@@ -108,7 +108,7 @@
 											<p class="mb-1" id="orderStatus"></p>
 											<p class="mb-1" id="orderPlacementDate"></p>
 											<p class="mb-1" id="deliveryDate"></p>
-											<p class="mb-1" id="orderReceivalDate"></p>
+											<p class="mb-1" id="orderRetrievalDate"></p>
 										</div>
 									</div>
 									<hr/>
@@ -118,24 +118,18 @@
 												   style="text-align: center;">
 												<thead>
 												<tr>
-													<th
-															class="border-0 text-uppercase small font-weight-bold">STT
+													<th class="border-0 text-uppercase small font-weight-bold">
+														No
 													</th>
-													<th
-															class="border-0 text-uppercase small font-weight-bold">Tên
-														s?n ph?m
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Product Name
 													</th>
-													<th
-															class="border-0 text-uppercase small font-weight-bold">??n
-														giá
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Price
 													</th>
-													<th
-															class="border-0 text-uppercase small font-weight-bold">S?
-														l??ng ??t
+													<th class="border-0 text-uppercase small font-weight-bold">
+														Quantity
 													</th>
-													<!-- 															<th
-																													class="border-0 text-uppercase small font-weight-bold">S?
-																													l??ng nh?n</th> -->
 												</tr>
 												</thead>
 												<tbody>
@@ -155,7 +149,7 @@
 
 									<div class="col-md-6">
 										<h5 class="font-weight-bold mb-4">
-											<strong>Thông tin khác</strong>
+											<strong>Additional info</strong>
 										</h5>
 										<p class="mb-1" id="shipper"></p>
 										<p class="mb-1" id="nguoiDat"></p>
@@ -167,7 +161,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary"
-								data-dismiss="modal">?óng
+								data-dismiss="modal">Total
 						</button>
 					</div>
 				</div>
@@ -221,7 +215,7 @@
 
 								<div>
 									<h5 id="ghiChu" style="font-weight: bold; padding-top: 10px">Note</h5>
-									<textarea rows="3" cols="117" id="ghiChuShipper"></textarea>
+									<textarea id="delivererNote" style="top: 50%;width: 100%"></textarea>
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -246,10 +240,10 @@
             from.datepicker("option", "maxDate", getDate(this));
         });
 
-        const trangThai = /*[[${#request.getParameter('trangThai')}]]*/ 'null';
-        if (trangThai !== null) {
-            $("#trangThai").val(trangThai);
-            console.log(trangThai);
+        const status = /*[[${#request.getParameter('status')}]]*/ 'null';
+        if (status !== null) {
+            $("#trangThai").val(status);
+            console.log(status);
         }
 
         const from = $("#fromDate").datepicker({

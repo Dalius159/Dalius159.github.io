@@ -33,7 +33,7 @@ $(document).ready(function () {
                         '<td>' + order.orderDate + '</td>' +
                         '<td>' + order.deliveryDate + '</td>' +
                         '<td>' + order.receivedDate + '</td>' +
-                        '<td>' + '<input type="hidden" class="donHangId" value=' + order.id + '>' + '</td>' +
+                        '<td>' + '<input type="hidden" class="orderID" value=' + order.id + '>' + '</td>' +
                         '<td><button class="btn btn-warning btnOrderDetail" >Details</button>';
                     if (order.orderStatus === "Waiting for Delivery" || order.orderStatus === "Delivering") {
                         orderEntry += ' &nbsp;<button class="btn btn-primary btnAssignDeliverer">Assign</button>' +
@@ -65,20 +65,19 @@ $(document).ready(function () {
     $(document).on('click', '.btnAssignDeliverer', function (event) {
         event.preventDefault();
         const orderID = $(this).parent().prev().children().val();
-        $("#donHangId").val(orderID);
+        $("#orderID").val(orderID);
         console.log(orderID);
         $("#phanCongModal").modal();
     });
 
     $(document).on('click', '#btnAssignDelivererSubmit', function (event) {
+        // find select element with name = deliver
         const email = $("select[name=deliver]").val();
-        const orderID = $("#donHangId").val();
-        console.log(orderID);
-        ajaxPostPhanCongDonHang(email, orderID)
-
+        const orderID = $("#orderID").val();
+        postAssignOrderForDelivery(email, orderID)
     });
 
-    function ajaxPostPhanCongDonHang(email, orderID) {
+    function postAssignOrderForDelivery(email, orderID) {
 
         $.ajax({
             async: false,
@@ -128,7 +127,6 @@ $(document).ready(function () {
         event.preventDefault();
 
         const orderID = $(this).parent().prev().children().val();
-//		console.log(donHangId);
         const href = "http://localhost:8080/api/order/" + orderID;
         $.get(href, function (order) {
             $('#orderID').text("Order ID: " + order.id);
@@ -143,7 +141,7 @@ $(document).ready(function () {
             }
 
             if (order.receivedDate != null) {
-                $("#orderReceivalDate").text("Retrieval date: " + order.receivedDate);
+                $("#orderRetrievalDate").text("Retrieval date: " + order.receivedDate);
             }
 
             if (order.note != null) {
@@ -151,7 +149,7 @@ $(document).ready(function () {
             }
 
             if (order.orderer != null) {
-                $("#nguoiDat").html("<strong>Ordering party</strong>:  " + order.orderer.fullName);
+                $("#orderer").html("<strong>Ordering party</strong>:  " + order.orderer.fullName);
             }
 
             if (order.deliver != null) {
@@ -160,7 +158,8 @@ $(document).ready(function () {
 
             const check = order.orderStatus === "Completed" || order.orderStatus === "Waiting for approval";
             if (check) {
-                $('.detailTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Receiving quantity</th>');
+                $('.detailTable').find('thead tr')
+                    .append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Received</th>');
             }
             // add table
             let sum = 0; // order gross value
@@ -221,7 +220,7 @@ $(document).ready(function () {
                     '<td>' + order.orderDate + '</td>' +
                     '<td>' + order.deliveryDate + '</td>' +
                     '<td>' + order.receivedDate + '</td>' +
-                    '<td>' + '<input type="hidden" id="donHangId" value=' + order.id + '>' + '</td>' +
+                    '<td>' + '<input type="hidden" id="orderID" value=' + order.id + '>' + '</td>' +
                     '<td><button class="btn btn-primary btnOrderDetail" >Detail</button>';
 
                 if (order.orderStatus === "Waiting for Delivery" || order.orderStatus === "Delivering") {

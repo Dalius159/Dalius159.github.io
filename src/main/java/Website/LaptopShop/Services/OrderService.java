@@ -23,7 +23,7 @@ public interface OrderService {
 
     List<Orders> findByOrderStatusAndDeliver(String status,Users deliver);
 
-    Page<Orders> findOrderByDeliver(SearchOrderObject object, int page, int size, Users deliver) throws ParseException;
+    Page<Orders> findOrderByDeliver(SearchOrderObject object, int page, Users deliver) throws ParseException;
 
     int countByOrderStatus(String orderStatus);
 }

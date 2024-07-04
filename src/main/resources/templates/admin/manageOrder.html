@@ -135,7 +135,7 @@
 												<p class="mb-1" id="orderStatus"></p>
 												<p class="mb-1" id="orderPlacementDate"></p>
 												<p class="mb-1" id="deliveryDate"></p>
-												<p class="mb-1" id="orderReceivalDate"></p>
+												<p class="mb-1" id="orderRetrievalDate"></p>
 											</div>
 										</div>
 										<hr/>
@@ -177,9 +177,9 @@
 											<h5 class="font-weight-bold mb-4">
 												<strong>Additional info</strong>
 											</h5>
-											<p class="mb-1" id="shipper"></p>
-											<p class="mb-1" id="nguoiDat"></p>
-											<p id="ghiChu"></p>
+											<p class="mb-1" id="deliverer"></p>
+											<p class="mb-1" id="orderer"></p>
+											<p id="note"></p>
 										</div>
 									</div>
 								</div>
@@ -210,20 +210,20 @@
 							</div>
 							<div class="modal-body">
 								<div class="form-group">
-									<input type="hidden" id="donHangId" value=""/>
+									<input type="hidden" id="orderID" value=""/>
 								</div>
 								<div class="form-group">
-									Choose a shipper for this order: <select class="form-control"
-																			 name="shipper">
-									<option th:each="shipper : ${allDeliver}"
-											th:value="${shipper.email}"
-											th:text="${shipper.fullName} + '(' + ${#lists.size(shipper.listOrders)} + ')'">
+									Choose a deliverer for this order: <select class="form-control"
+																			 name="deliver">
+									<option th:each="deliver : ${allDeliver}"
+											th:value="${deliver.email}"
+											th:text="${deliver.fullName}">
 									</option>
 								</select>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-											data-dismiss="modal">Cancel
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">
+										Cancel
 									</button>
 									<input class="btn btn-primary" id="btnAssignDelivererSubmit"
 										   type="button" value="Confirm"/>
@@ -279,7 +279,8 @@
 											</tbody>
 										</table>
 										<h4 id="totalValue"
-											style="float: right; font-weight: bold;padding-right: 50px">total value money placeholder</h4>
+											style="float: right; font-weight: bold;padding-right: 50px">total value
+											money placeholder</h4>
 									</div>
 
 									<div>

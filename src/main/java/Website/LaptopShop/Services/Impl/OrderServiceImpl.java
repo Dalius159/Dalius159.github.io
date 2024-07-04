@@ -58,7 +58,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Orders findById(long id) {return Rep.findById(id).get();}
+    public Orders findById(long id) {
+        return Rep.findById(id).get();
+    }
 
     @Override
     public Orders save(Orders order) {
@@ -66,10 +68,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Object> getOrderByMonthAndYear() {return Rep.getOrderByMonthAndYear();}
+    public List<Object> getOrderByMonthAndYear() {
+        return Rep.getOrderByMonthAndYear();
+    }
 
     @Override
-    public List<Orders> getOrderByUser(Users user) {return Rep.findByOrderer(user);}
+    public List<Orders> getOrderByUser(Users user) {
+        return Rep.findByOrderer(user);
+    }
 
     @Override
     public Orders findLatestOrderByOrdererID(Long ordererID) {
@@ -82,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Orders> findOrderByDeliver(SearchOrderObject object, int page, int size, Users deliver) throws ParseException {
+    public Page<Orders> findOrderByDeliver(SearchOrderObject object, int page, Users deliver) throws ParseException {
         BooleanBuilder builder = new BooleanBuilder();
 
         String orderStatus = object.getOrderStatus();
