@@ -1,15 +1,16 @@
 package Website.LaptopShop.Controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -17,12 +18,20 @@ import java.util.TreeMap;
 public class VnPayController {
 
     @PostMapping("/vnpay_payment")
-    public ResponseEntity<Void> payment(@RequestParam Map<String, String> params, @RequestHeader("X-FORWARDED-FOR") String remoteAddr, Model model) {
+    public ResponseEntity<Map<String, String>> payment(@RequestParam Map<String, String> params, HttpServletRequest request, Model model) {
+        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        if (remoteAddr == null || remoteAddr.isEmpty()) {
+            remoteAddr = request.getRemoteAddr();
+        }
+
+        // Mã hóa địa chỉ IP nhưng không thay đổi giá trị thực của nó
+        remoteAddr = URLEncoder.encode(remoteAddr, StandardCharsets.UTF_8);
+
         Map<String, String> requestData = new TreeMap<>();
         requestData.put("vnp_Version", "2.1.0");
         requestData.put("vnp_Command", "pay");
         requestData.put("vnp_TmnCode", "ALOOTST2");
-        requestData.put("vnp_Amount", String.valueOf(Integer.parseInt(params.get("amount")) * 100));
+        requestData.put("vnp_Amount", params.get("amount"));
         requestData.put("vnp_CurrCode", "VND");
         requestData.put("vnp_TxnRef", params.get("order_id"));
         requestData.put("vnp_OrderInfo", params.get("order_desc"));
@@ -33,7 +42,10 @@ public class VnPayController {
         requestData.put("vnp_ReturnUrl", "http://localhost:8080/payment_return");
 
         String paymentUrl = getPaymentUrl(requestData);
-        return ResponseEntity.status(302).header("Location", paymentUrl).build();
+        System.out.println();
+        Map<String, String> response = new HashMap<>();
+        response.put("paymentUrl", paymentUrl);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/payment_return")
@@ -41,14 +53,14 @@ public class VnPayController {
         Map<String, String> responseData = new TreeMap<>(params);
 
         String vnp_ResponseCode = responseData.get("vnp_ResponseCode");
-        String result = "00".equals(vnp_ResponseCode) ? "Thành công" : "Lỗi";
+        String result = "00".equals(vnp_ResponseCode) ? "Success" : "Error";
 
         if (!validateResponse(responseData)) {
-            result = "Lỗi";
-            responseData.put("msg", "Sai checksum");
+            result = "Error";
+            responseData.put("msg", "Wrong checksum");
         }
 
-        model.addAttribute("title", "Kết quả thanh toán");
+        model.addAttribute("title", "Checkout Result");
         model.addAttribute("result", result);
         model.addAttribute("order_id", responseData.get("vnp_TxnRef"));
         model.addAttribute("amount", Integer.parseInt(responseData.get("vnp_Amount")) / 100);
@@ -57,7 +69,7 @@ public class VnPayController {
         model.addAttribute("vnp_ResponseCode", vnp_ResponseCode);
         model.addAttribute("msg", responseData.get("msg"));
 
-        return "vnpay_payment_return"; // Tên của template
+        return "vnpay_payment_return";
     }
 
     private String getPaymentUrl(Map<String, String> requestData) {

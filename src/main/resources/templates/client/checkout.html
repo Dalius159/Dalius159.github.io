@@ -20,29 +20,31 @@
       });
 
       document.getElementById('submit').addEventListener('click', function (event) {
+        event.preventDefault();
+
         var paymentGate = document.getElementById('paymentGate').value;
         var receiver = document.getElementById('receiver').value.trim();
         var receivedPhone = document.getElementById('receivedPhone').value.trim();
         var receiveAddress = document.getElementById('receiveAddress').value.trim();
 
         if (!receiver || !receivedPhone || !receiveAddress) {
-          event.preventDefault();
           document.getElementById('alertMsg').style.display = 'block';
           return;
         }
 
+        var totalCost = parseFloat(document.getElementById('orderTotal').textContent.replace(/[^0-9.-]+/g, ""));
+        var totalCostVND = totalCost * 25;
+        var userId = document.getElementById('userId').value;
+        var now = new Date();
+        var formattedDate = now.getFullYear().toString() +
+                ('0' + (now.getMonth() + 1)).slice(-2) +
+                ('0' + now.getDate()).slice(-2) +
+                ('0' + now.getHours()).slice(-2) +
+                ('0' + now.getMinutes()).slice(-2) +
+                ('0' + now.getSeconds()).slice(-2);
+        var orderDescription = userId + ' ' + formattedDate;
+
         if (paymentGate === 'vietqr') {
-          var totalCost = parseFloat(document.getElementById('orderTotal').textContent.replace(/[^0-9.-]+/g, ""));
-          var totalCostVND = totalCost * 25;
-          var userId = document.getElementById('userId').value;
-          var now = new Date();
-          var formattedDate = now.getFullYear().toString() +
-                  ('0' + (now.getMonth() + 1)).slice(-2) +
-                  ('0' + now.getDate()).slice(-2) +
-                  ('0' + now.getHours()).slice(-2) +
-                  ('0' + now.getMinutes()).slice(-2) +
-                  ('0' + now.getSeconds()).slice(-2);
-          var orderDescription = userId + ' ' + formattedDate;
           var qrUrl = 'https://img.vietqr.io/image/vietinbank-108872276458-compact2.png?amount=' + totalCostVND + '&addInfo=' + encodeURIComponent(orderDescription);
 
           // Save QR URL and details to localStorage
@@ -52,10 +54,26 @@
 
           // Redirect to processPayment page
           window.location.href = "/process_payment";
+        } else if (paymentGate === 'vnpay') {
+          var vnpayParams = {
+            amount: totalCostVND,
+            order_desc: encodeURIComponent(orderDescription),
+            order_id: formattedDate
+          };
+
+          $.post('/vnpay_payment', vnpayParams, function(data) {
+            if (data && data.paymentUrl) {
+              window.location.href = data.paymentUrl;
+            } else {
+              alert('Payment URL not received');
+            }
+          });
+        } else {
+          // Default action for other payment gates
+          document.querySelector('form').submit();
         }
       });
     });
-
   </script>
 </head>
 <body>
