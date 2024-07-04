@@ -4,7 +4,6 @@
 	  xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-	<!--many other boilerplate in /include/ use libraries here, do not remove-->
 	<link rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}">
 	<link rel="stylesheet" th:href="@{/css/style.css}" type="text/css" media="all"/>
 	<link th:href="@{'//fonts.googleapis.com/css?family=Londrina+Solid|Coda+Caption:800|Open+Sans'}" rel="stylesheet"
@@ -63,19 +62,18 @@
 
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Shopping<span class="caret"></span></a>
-					<ul class="dropdown-menu" style="background: #94cb32" id="category2"></ul>
+					<ul class="dropdown-menu" style="background:#0d2e45" id="category2"></ul>
 				</li>
 				<li><a th:href="@{/guarantee}">On-site Guarantee</a></li>
+
 				<li><a th:href="@{/contact}">Contact</a></li>
 			</ul>
 		</div>
 		<div class="clear"></div>
 	</div>
 </div>
-
-<!-- Include jQuery before Bootstrap -->
-<script th:src="@{'https://code.jquery.com/jquery-3.6.0.min.js'}"></script>
-<script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+<script th:src="@{/jquery/jquery.min.js}"></script>
+<script th:src="@{/bootstrap/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/accounting.min.js}"></script>
 <script th:src="@{/glide/glide.min.js}"></script>
 <script th:src="@{/js/client/category.js}"></script>

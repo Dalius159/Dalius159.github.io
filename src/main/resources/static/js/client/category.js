@@ -19,7 +19,7 @@ function getCategoryList(contextPath) {
 							  <span style="font-size: 16px; font-weight: 900;">${category.categoryName}</span>
 							</a></li>`;
                 const content2 = `
-						  <li><a style="padding-right: 100px" href="${contextPath}/store?category=${category.categoryName}">
+						  <li><a style="" href="${contextPath}/store?category=${category.categoryName}">
 							  ${category.categoryName}
 							</a></li>`;
                 document.getElementById('category').insertAdjacentHTML('beforeend', content);
