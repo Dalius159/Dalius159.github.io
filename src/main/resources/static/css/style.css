@@ -556,9 +556,8 @@ body {
     font-size: 12px;
     color: rgb(116, 110, 110);
     display: block;
-    padding: 12px 0px;
     background: url(../images/sepHor.png) repeat-x left bottom;
-    padding-left: 5px;
+    padding: 12px 0 12px 5px;
 }
 
 .content-sidebar li a:hover {
@@ -683,7 +682,8 @@ body {
 
 /*---footer---*/
 .footer {
-    background: #081b29;
+    background: #0d2e45;
+    padding: 20px 0;
 }
 
 .footer-lastgrid input[type="text"] {
@@ -1392,7 +1392,7 @@ body {
 /*----copy-right----*/
 .copy-right {
     text-align: center;
-    background: #081b29;
+    background: #0d2e45;
     padding: 0px 0px 10px 0px;
 }
 
@@ -1669,8 +1669,7 @@ body {
     }
 
     .details-categories {
-        margin: 0px;
-        margin-top: 10px;
+        margin: 10px 0 0;
     }
 
     .brand-value {
@@ -1721,5 +1720,4 @@ body {
         font-size: 0.7125em;
         padding: 6px 1px;
     }
-
 }

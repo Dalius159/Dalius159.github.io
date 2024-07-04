@@ -83,16 +83,18 @@
 	<!-- Thêm các thông tin cần thiết khác vào đây -->
 </form>
 <div class="container">
+	<div class="detail-header">
+		<p>Order Details</p>
+		<hr>
+	</div>
 	<div class="row">
 		<div class="col-md-12 center">
 			<br>
 			<div class="order-details">
-				<p><b>ORDER DETAILS</b></p>
-				<p><b>Order ID: </b><span th:text="${order.getId()}"></span></p>
 				<p><b>Recipient's Name: </b><span th:text="${order.getReceiver()}"></span></p>
 				<p><b>Phone Number: </b><span th:text="${order.getReceivedPhone()}"></span></p>
 				<p><b>Address: </b><span th:text="${order.getReceiveAddress()}"></span></p>
-				<p>At <span th:text="${order.getOrderDate()}"></span>, we received an order with the following products:</p>
+				<p>At <span th:text="${#dates.format(currentDate, 'yyyy-MM-dd HH:mm:ss')}"></span>, we received an order with the following products:</p>
 			</div>
 			<br>
 			<table class="table-cart-checkout">

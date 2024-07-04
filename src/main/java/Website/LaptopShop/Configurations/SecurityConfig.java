@@ -65,8 +65,6 @@ public class SecurityConfig {
 					System.out.println(exceptionHandling.toString());
 					exceptionHandling.accessDeniedPage("/login?accessDenied");
 				});
-
-
 		return http.build();
 	}
 }
