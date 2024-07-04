@@ -22,11 +22,9 @@ $(document).ready(function () {
         $("#categoryName").val("");
     }
 
+    getAllCategories(1);
 
-    ajaxGet(1);
-
-    // do get
-    function ajaxGet(page) {
+    function getAllCategories(page) {
         $.ajax({
             type: "GET",
             url: "http://localhost:8080/api/category/all" + "?page=" + page,
@@ -52,16 +50,13 @@ $(document).ready(function () {
     }
 
 
-    $(document).on('click', '.btnSaveForm', function (event) {
-        event.preventDefault();
+    $(document).on('click', '.btnSaveForm',function(){
         postAddNewCategory();
         resetData();
-    });
+    })
 
     function postAddNewCategory() {
-        // PREPARE FORM DATA
         const formData = {categoryName: $("#categoryName").val()};
-        // DO POST
         $.ajax({
             async: false,
             type: "POST",
@@ -88,13 +83,13 @@ $(document).ready(function () {
         });
     }
 
-    // click edit button
+    // clicking on update button
     $(document).on("click", ".btnUpdateCategory", function () {
-        event.preventDefault();
         $('.categoryForm #id').prop("disabled", true);
-        const categoryID = $(this).parent().find('input').val();
         $('#form').removeClass().addClass("updateForm");
         $('#form #btnSubmit').removeClass().addClass("btn btn-primary btnUpdateForm");
+
+        const categoryID = $(this).parent().find('input').val();
         const href = "http://localhost:8080/api/category/" + categoryID;
         $.get(href, function (category, status) {
             $('.updateForm #id').val(category.id);
@@ -157,7 +152,7 @@ $(document).ready(function () {
                 type: "DELETE",
                 url: "http://localhost:8080/api/category/delete/" + categoryID,
                 success: function (resultMsg) {
-                    resetDataForDelete();
+                    resetData();
                     alert("Delete successfully");
                 },
                 error: function (e) {
@@ -168,37 +163,20 @@ $(document).ready(function () {
         }
     });
 
-    // reset table after post, put
     function resetData() {
         $('.categoryTable tbody tr').remove();
-        const page = $('li.active').children().text();
         $('.pagination li').remove();
-        ajaxGet(page);
+        getAllCategories(1);
     }
 
-    // reset table after delete
-    function resetDataForDelete() {
-        const count = $('.categoryTable tbody').children().length;
-        console.log("columns " + count);
-        $('.categoryTable tbody tr').remove();
-        const page = $('li.active').children().text();
-        $('.pagination li').remove();
-        console.log(page);
-        if (count === 1) {
-            ajaxGet(page - 1);
-        } else {
-            ajaxGet(page);
-        }
-
-    }
-
-    // event - clicking on category pagination
+// event - clicking on category pagination
     $(document).on('click', '.pageNumber', function (event) {
+
 //		event.preventDefault();
         const page = $(this).text();
         $('.categoryTable tbody tr').remove();
         $('.pagination li').remove();
-        ajaxGet(page);
+        getAllCategories(page);
     });
 
 
