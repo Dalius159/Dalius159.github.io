@@ -18,76 +18,88 @@
     });
     /*]]>*/
   </script>
+  <style>
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    .cart-header {
+      font-size: 30px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
 
 <div th:insert="~{/client/include/homeHeader}"></div>
 
-
 <div class="container">
-  <div class="row">
-    <h2 style="">CART MANAGER</h2> <br>
-    <div class="col-10">
-      <table class="table-cart-checkout mytable table-convert-price">
-        <tr>
-          <td>No.</td>
-          <td>Picture</td>
-          <td>Product name</td>
-          <td>Price</td>
-          <td>Quantity</td>
-          <td>Total</td>
-          <td>Delete</td>
-        </tr>
-        <tr th:each="sanpham, loop : ${cart}" class="cart_line" th:id="'item' + ${sanpham.id}">
-          <td th:text="${loop.index+1}"></td>
-          <td><img th:src="@{/product_images/{id}.png(id=${sanpham.id})}" th:alt="${sanpham.id}"
-                   style="width: 150px" class="cart-img"></td>
-          <td style="text-align: center; margin-top: -52px;">
-            <p class="cart_ten"><a th:href="@{/sp(id=${sanpham.id})}" th:text="${sanpham.getProductName}"></a></p>
-            <p class="cart_masanpham">Product ID:<span th:text="${sanpham.id}"></span></p>
-            <p class="">Guarantee:<span th:text="${sanpham.getWarrantyInfor}"></span></p>
-          </td>
-          <td class="covertPriceProduct" th:text="${sanpham.getPrice}"></td>
-          <td>
-            <input class="input_num_cart" type="number" th:value="${quantity[sanpham.id]}" min="1"
-                   th:onchange="'changeQuantity(' + ${sanpham.id} + ', this.value, ' + ${sanpham.getPrice} + ')'"/>
-          </td>
-          <td><b><span class="total" th:id="'item' + ${sanpham.id} + '_total'"
-                       th:text="${sanpham.getPrice * quantity[sanpham.id]}"></span></b></td>
-          <td class="cart-img">
-            <a class="btn btn-danger" th:onclick="'deleteFromCart(' + ${sanpham.id} + ')'"
-               onclick="return false;"><span class="glyphicon glyphicon-trash"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="3" th:if="${checkEmpty != 0}">>
-            <a class="btn btn-primary" th:href="@{/}">
-              <span class="glyphicon glyphicon-hand-left"></span>Buy other products
-            </a>
-            <span th:utext="${'&nbsp;'.repeat(9)}"></span>
-            <a class="btn btn-warning" th:href="@{/checkout}">
-              <span class="glyphicon glyphicon-check"></span>Checkout
-            </a>
-          </td>
+  <div class="cart-header">
+    <p>Cart Manager</p>
+    <hr>
+  </div>
+  <div class="d-flex justify-content-center">
+    <table class="table table-cart-checkout mytable table-convert-price w-100">
+      <tr>
+        <td>No.</td>
+        <td>Picture</td>
+        <td>Product name</td>
+        <td>Price</td>
+        <td>Quantity</td>
+        <td>Total</td>
+        <td>Delete</td>
+      </tr>
+      <tr th:each="sanpham, loop : ${cart}" class="cart_line" th:id="'item' + ${sanpham.id}">
+        <td th:text="${loop.index+1}"></td>
+        <td><img th:src="@{/product_images/{id}.png(id=${sanpham.id})}" th:alt="${sanpham.id}"
+                 style="width: 150px" class="cart-img"></td>
+        <td style="text-align: center; margin-top: -52px;">
+          <p class="cart_ten"><a th:href="@{/sp(id=${sanpham.id})}" th:text="${sanpham.getProductName}"></a></p>
+          <p class="cart_masanpham">Product ID:<span th:text="${sanpham.id}"></span></p>
+          <p class="">Guarantee:<span th:text="${sanpham.getWarrantyInfor}"></span></p>
+        </td>
+        <td class="covertPriceProduct" th:text="${sanpham.getPrice}"></td>
+        <td>
+          <input class="input_num_cart" type="number" th:value="${quantity[sanpham.id]}" min="1"
+                 th:onchange="'changeQuantity(' + ${sanpham.id} + ', this.value, ' + ${sanpham.getPrice} + ')'"/>
+        </td>
+        <td><b><span class="total" th:id="'item' + ${sanpham.id} + '_total'"
+                     th:text="${sanpham.getPrice * quantity[sanpham.id]}"></span></b></td>
+        <td class="cart-img">
+          <a class="btn btn-danger" th:onclick="'deleteFromCart(' + ${sanpham.id} + ')'"
+             onclick="return false;"><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" th:if="${checkEmpty != 0}">
+          <a class="btn btn-primary" th:href="@{/}">
+            <span class="glyphicon glyphicon-hand-left"></span>Buy other products
+          </a>
+          <span th:utext="${'&nbsp;'.repeat(9)}"></span>
+          <a class="btn btn-warning" th:href="@{/checkout}">
+            <span class="glyphicon glyphicon-check"></span>Checkout
+          </a>
+        </td>
 
-          <td colspan="3" th:if="${checkEmpty == 0}">
-            <a class="btn btn-primary" th:href="@{/}">Buy other products</a>
-          </td>
+        <td colspan="3" th:if="${checkEmpty == 0}">
+          <a class="btn btn-primary" th:href="@{/}">Buy other products</a>
+        </td>
 
-          <td colspan="4">
-            <p class="cart_tongdonhang">Total order value:<span id="orderTotal"></span></p>
-          </td>
-        </tr>
-
-      </table>
-    </div>
-    <div class="col-xs-1"></div>
+        <td colspan="4">
+          <p class="cart_tongdonhang">Total order value:<span id="orderTotal"></span></p>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
 
 <script th:src="@{/js/client/cartAjax.js}"></script>
-
 
 <div th:insert="~{/client/include/homeFooter}"></div>
 

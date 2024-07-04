@@ -20,19 +20,31 @@
       });
 
       document.getElementById('submit').addEventListener('click', function (event) {
+        event.preventDefault();
+
         var paymentGate = document.getElementById('paymentGate').value;
+        var receiver = document.getElementById('receiver').value.trim();
+        var receivedPhone = document.getElementById('receivedPhone').value.trim();
+        var receiveAddress = document.getElementById('receiveAddress').value.trim();
+
+        if (!receiver || !receivedPhone || !receiveAddress) {
+          document.getElementById('alertMsg').style.display = 'block';
+          return;
+        }
+
+        var totalCost = parseFloat(document.getElementById('orderTotal').textContent.replace(/[^0-9.-]+/g, ""));
+        var totalCostVND = totalCost * 25;
+        var userId = document.getElementById('userId').value;
+        var now = new Date();
+        var formattedDate = now.getFullYear().toString() +
+                ('0' + (now.getMonth() + 1)).slice(-2) +
+                ('0' + now.getDate()).slice(-2) +
+                ('0' + now.getHours()).slice(-2) +
+                ('0' + now.getMinutes()).slice(-2) +
+                ('0' + now.getSeconds()).slice(-2);
+        var orderDescription = userId + ' ' + formattedDate;
+
         if (paymentGate === 'vietqr') {
-          var totalCost = parseFloat(document.getElementById('orderTotal').textContent.replace(/[^0-9.-]+/g, ""));
-          var totalCostVND = totalCost * 25;
-          var userId = document.getElementById('userId').value;
-          var now = new Date();
-          var formattedDate = now.getFullYear().toString() +
-                  ('0' + (now.getMonth() + 1)).slice(-2) +
-                  ('0' + now.getDate()).slice(-2) +
-                  ('0' + now.getHours()).slice(-2) +
-                  ('0' + now.getMinutes()).slice(-2) +
-                  ('0' + now.getSeconds()).slice(-2);
-          var orderDescription = userId + ' ' + formattedDate;
           var qrUrl = 'https://img.vietqr.io/image/vietinbank-108872276458-compact2.png?amount=' + totalCostVND + '&addInfo=' + encodeURIComponent(orderDescription);
 
           // Save QR URL and details to localStorage
@@ -42,10 +54,26 @@
 
           // Redirect to processPayment page
           window.location.href = "/process_payment";
+        } else if (paymentGate === 'vnpay') {
+          var vnpayParams = {
+            amount: totalCostVND,
+            order_desc: encodeURIComponent(orderDescription),
+            order_id: formattedDate
+          };
+
+          $.post('/vnpay_payment', vnpayParams, function(data) {
+            if (data && data.paymentUrl) {
+              window.location.href = data.paymentUrl;
+            } else {
+              alert('Payment URL not received');
+            }
+          });
+        } else {
+          // Default action for other payment gates
+          document.querySelector('form').submit();
         }
       });
     });
-
   </script>
 </head>
 <body>
@@ -94,10 +122,9 @@
           <label>Address</label>
           <textarea class="form-control" rows="3" th:field="*{receiveAddress}" th:id="receiveAddress" required></textarea>
         </div>
-        <div class="alert alert-danger" th:id="alertMsg"
-             th:style="${#fields.hasErrors('receiver') or #fields.hasErrors('receivedPhone') or #fields.hasErrors('receiveAddress')} ? '' : 'display:none;'">
+        <div class="alert alert-danger" id="alertMsg" style="display: none;">
           <button type="button" class="close" onclick="this.parentElement.style.display='none';">&times;</button>
-          Please provide all information
+          Please provide all delivery information.
         </div>
         <input type="hidden" th:field="*{totalCost}" th:id="totalCost" >
       </div>
@@ -135,6 +162,7 @@
           <select class="form-control" id="paymentGate" name="paymentGate" required>
             <option value="">Select...</option>
             <option value="vietqr">VietQR</option>
+            <option value="vnpay">VnPay</option>
             <!-- Add other payment gates here -->
           </select>
         </div>

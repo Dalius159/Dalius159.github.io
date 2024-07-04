@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@SessionAttributes("loggedInUser")
+@SessionAttributes({"loggedInUser", "order"})
 public class CheckOutController {
 	@Autowired
 	private UserService userService;
@@ -61,7 +61,8 @@ public class CheckOutController {
 	}
 
 	@PostMapping("/process_order")
-	public String processOrder(@ModelAttribute("order") Orders order) {
+	public String processOrder(@ModelAttribute("order") Orders order, Model model) {
+		model.addAttribute("order", order);
 		return "redirect:/process_payment";
 	}
 
@@ -73,13 +74,12 @@ public class CheckOutController {
 	}
 
 	@GetMapping(value = "/process_payment")
-	public String processPaymentPage(HttpServletRequest req, Model model) {
+	public String processPaymentPage(HttpServletRequest req, Model model, @ModelAttribute("order") Orders order) {
 		Users currentUser = getSessionUser(req);
 		Map<Long, Long> quantity = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 
 		Cart g = cartService.getCartByUser(currentUser);
-
 		List<CartPointer> cartPointerList = cartPointerService.getCartPointerByCart(g);
 
 		for (CartPointer c : cartPointerList) {
@@ -90,7 +90,8 @@ public class CheckOutController {
 		model.addAttribute("cart", productList);
 		model.addAttribute("quantity", quantity);
 		model.addAttribute("user", currentUser);
-		model.addAttribute("order", new Orders());
+		model.addAttribute("order", order);
+		model.addAttribute("currentDate", new Date());
 
 		return "client/processPayment";
 	}

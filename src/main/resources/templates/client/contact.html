@@ -5,29 +5,66 @@
 	<link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
 	<title>LeoLap - Contact</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<style>
+		.container {
+			max-width: 900px;
+			margin: 20px auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+		}
+		.contact-header {
+			font-size: 30px;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		.form-group {
+			margin-bottom: 15px;
+		}
+		.warning-text {
+			color: red;
+			font-size: 14px;
+		}
+		.btn-primary {
+			background-color: #0d2e45;
+			width: 10%;
+			font-size: 30px;
+		}
+		.btn-primary:hover {
+			background-color: #144e91;
+		}
+		/* Add this style to ensure the textarea is large enough */
+		textarea {
+			width: 100%;
+			height: 150px;
+		}
+	</style>
 </head>
 <body>
 <div th:insert="~{/client/include/homeHeader}"></div>
 <div class="container">
-	<br>
-	<p style="'font-size: 30px'">Contact Us</p>
-	<hr>
+	<div class="contact-header">
+		<p>Contact Us</p>
+		<hr>
+	</div>
 	<form>
 		<div class="form-group">
 			<label for="email">Your email:</label>
-			<p id="emailWarning" style="color: red"></p>
-			<input type="email" class="form-control" id="email">
+			<input type="email" class="form-control" id="email" placeholder="Enter your email">
+			<p id="emailWarning" class="warning-text"></p>
 		</div>
 		<div class="form-group">
 			<label for="content">Contact Information:</label>
-			<p id="contentWarning" style="color: red"></p>
-			<textarea class="form-control" id="content"></textarea>
+			<textarea class="form-control" id="content" rows="5" placeholder="Enter your message"></textarea>
+			<p id="contentWarning" class="warning-text"></p>
 		</div>
+		<button type="button" onClick="sendContact()" class="btn btn-primary">Send</button>
 	</form>
-	<button onClick="sendContact()" class="btn btn-primary">Send</button>
 </div>
-<script th:src="@{/js/client/contact.js}" ></script>
-
+<script th:src="@{/js/client/contact.js}"></script>
 <div th:insert="~{client/include/homeFooter}"></div>
 </body>
 </html>

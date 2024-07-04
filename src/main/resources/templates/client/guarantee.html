@@ -4,52 +4,70 @@
 	<meta charset="UTF-8">
 	<link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
 	<title>LeoLap - Guarantee</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<style>
+		.container {
+			max-width: 900px;
+			margin: 20px auto;
+			padding: 20px;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+		}
+		.guarantee-header {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+		.guarantee-header img {
+			max-width: 100%;
+			height: auto;
+		}
+		.guarantee-content p {
+			text-align: justify;
+			margin-bottom: 20px;
+		}
+		.guarantee-content p.title {
+			font-weight: bold;
+			font-size: 1.2em;
+			margin-top: 30px;
+		}
+	</style>
 </head>
 <body>
 
 <div th:insert="~{/client/include/homeHeader}"></div>
 
 <div class="container">
-	<div class="row">
-		<div class="col-sm-1"></div>
-		<div class="col-lg-10" th:class="pull-center">
-			<br/>
-			<img th:src="@{/images/guarantee.jpg}" alt="guarantee img"/>
-			<br/><br/>
-			<p> In order to better meet the needs of customers and enhance the quality of service, Laptop Store
-				is running the program: "Golden Warranty accompanying businesses." The purpose of the program is to
-				offer additional services to enterprise customers after the sale, aiming to bring benefits and
-				peace of mind to our valued customers when using products from Laptop Store.</p>
-			<br/>
-			<p th:text="'1. EFFECTIVE PERIOD: From today:' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></p>
-			<br/>
-			<p><b>2. APPLICABLE PRODUCTS:</b> Whole computers (laptops, pre-built computers, desktops) </p>
-			<br/>
-			<p><b>3. APPLICABLE TARGET:</b> End-users who are businesses or organizations </p>            <br/>
-			<p><b>4. CONTENT:</b></p>
-			<br/>
-			<p> Customers who are businesses or organizations (not applicable to individual customers) will receive a
-				GOLDEN WARRANTY CARD valued at 25 USD (warranty at the place of use) for each whole computer
-				purchase (including laptops, pre-built computers, desktop computers) from Laptop Store.</p>
-			<br/>
-			<p>The Golden Warranty Card (GWC) is a type of service card issued by Laptop Store for repairing
-			   computers, components, and IT products.</p>
-			<br/>
-			<p>Card is not exchangeable for cash and is only issued once for each product. The company does not
-			   reissue the card in case of loss, damage, or expiration.</p>
-			<br/>
-			<p>Each GWC has an effective period of 12 months from the date of issue. During this period, customers can
-			   use the card up to 10 times for all their products.</p>
-			<br/>
-			<p>Customers with GWC have the right to choose the warranty location: At the company's warranty department
-			   or choose the warranty service at the place of use within a radius of 20 km from the company's sales
-			   location.</p>
+	<div class="row justify-content-center">
+		<div class="col-lg-10">
+			<div class="guarantee-header">
+				<img th:src="@{/images/guarantee.jpg}" alt="Guarantee Image">
+			</div>
+			<div class="guarantee-content">
+				<p>In order to better meet the needs of customers and enhance the quality of service, Laptop Store is running the program: "Golden Warranty accompanying businesses." The purpose of the program is to offer additional services to enterprise customers after the sale, aiming to bring benefits and peace of mind to our valued customers when using products from Laptop Store.</p>
 
+				<p th:text="'1. EFFECTIVE PERIOD: From today: ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></p>
+
+				<p class="title">2. APPLICABLE PRODUCTS:</p>
+				<p>Whole computers (laptops, pre-built computers, desktops)</p>
+
+				<p class="title">3. APPLICABLE TARGET:</p>
+				<p>End-users who are businesses or organizations</p>
+
+				<p class="title">4. CONTENT:</p>
+				<p>Customers who are businesses or organizations (not applicable to individual customers) will receive a GOLDEN WARRANTY CARD valued at 25 USD (warranty at the place of use) for each whole computer purchase (including laptops, pre-built computers, desktop computers) from Laptop Store.</p>
+
+				<p>The Golden Warranty Card (GWC) is a type of service card issued by Laptop Store for repairing computers, components, and IT products.</p>
+
+				<p>Card is not exchangeable for cash and is only issued once for each product. The company does not reissue the card in case of loss, damage, or expiration.</p>
+
+				<p>Each GWC has an effective period of 12 months from the date of issue. During this period, customers can use the card up to 10 times for all their products.</p>
+
+				<p>Customers with GWC have the right to choose the warranty location: At the company's warranty department or choose the warranty service at the place of use within a radius of 20 km from the company's sales location.</p>
+			</div>
 		</div>
-		<div class="col-sm-1"></div>
 	</div>
 </div>
-
 
 <div th:insert="~{client/include/homeFooter}"></div>
 

@@ -3,7 +3,10 @@ function sendContact() {
     var content = document.getElementById("content").value;
     var flag = 0;
 
-    if (!/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/.test(email)) {
+    document.getElementById("emailWarning").innerHTML = "";
+    document.getElementById("contentWarning").innerHTML = "";
+
+    if (!/^[^\d][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/.test(email)) {
         document.getElementById("emailWarning").innerHTML = "Wrong Email format";
         flag = 1;
     }
@@ -36,7 +39,7 @@ function sendContact() {
         contentType: "application/json",
         url: "http://localhost:8080/createContact",
         success: function (result) {
-            alert("Thanks for contacting us. Leolap will respond as soon as possible!");
+            alert("Thanks for contacting us. LeoLap will respond as soon as possible!");
             window.location.href = "/contact";
         },
         error: function (e) {

@@ -4,7 +4,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
     <title>LeoLap - Account</title>
-
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .account-header {
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="~{/client/include/homeHeader}"></div>
@@ -23,30 +40,29 @@
 </script>
 
 <div class="container">
+    <div class="account-header">
+        <p>Account Information</p>
+        <hr>
+    </div>
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <br>
-            <p style="font-size: 20px">
-                <b>Account Information:</b>
-            </p>
-            <br>
-            <h3 style="line-height: 2;">
+            <h3 style="line-height: 2;">Fullname:
                 <span th:text="${user.getFullName}" style="font-weight: bold"></span>
             </h3>
-            <h3 style="line-height: 2;">
+            <h3 style="line-height: 2;">Phone number:
                 <span th:text="${user.getPhoneNumber}" style="font-weight: bold"></span>
             </h3>
-            <h3 style="line-height: 2;">
+            <h3 style="line-height: 2;">Email:
                 <span th:text="${user.email}" style="font-weight: bold"></span>
             </h3>
-            <h3 style="line-height: 2;">
+            <h3 style="line-height: 2;">Address:
                 <span th:text="${user.getAddress}" style="font-weight: bold"></span>
             </h3>
             <br>
-            <a class="btn btn-primary" data-toggle="modal" data-target="#modalInformation">Update Personer Information</a>
+            <a class="btn btn-primary text-white" data-toggle="modal" data-target="#modalInformation">Update Personer Information</a>
             &nbsp; &nbsp; &nbsp;
-            <a class="btn btn-danger" data-toggle="modal" data-target="#modalChangePassword">Change Password</a>
+            <a class="btn btn-danger text-white" data-toggle="modal" data-target="#modalChangePassword">Change Password</a>
             <br> <br>
             <br>
             <h3>
