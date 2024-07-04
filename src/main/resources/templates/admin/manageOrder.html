@@ -101,12 +101,12 @@
 
 	<div class="row col-md-6">
 		<form class="formDetail">    <!--TODO: might be redundant-->
-			<div class="modal fade" id="chiTietModal" tabindex="-1" role="dialog"
+			<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog"
 				 aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog" role="document" style="width: 700px;">
 					<div class="modal-content">
 						<div class="modal-header">
-							<p class="h4 modal-title" id="maDonHang"></p>
+							<p class="h4 modal-title" id="orderID"></p>
 							<button type="button" class="close" data-dismiss="modal"
 									aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -122,9 +122,9 @@
 												<h5 class="font-weight-bold mb-4">
 													<strong>Customer info</strong>
 												</h5>
-												<p class="mb-1" id="hoTenNguoiNhan"></p>
-												<p class="mb-1" id="diaChiNhan"></p>
-												<p class="mb-1" id="sdtNhanHang"></p>
+												<p class="mb-1" id="receveiverName"></p>
+												<p class="mb-1" id="receveiverAddress"></p>
+												<p class="mb-1" id="receveiverPhoneNum"></p>
 											</div>
 
 											<div class="col-md-6 text-right"
@@ -132,16 +132,16 @@
 												<h5 class="font-weight-bold mb-4">
 													<strong>Order info</strong>
 												</h5>
-												<p class="mb-1" id="trangThaiDonHang"></p>
-												<p class="mb-1" id="ngayDatHang"></p>
-												<p class="mb-1" id="ngayShipHang"></p>
-												<p class="mb-1" id="ngayNhanHang"></p>
+												<p class="mb-1" id="orderStatus"></p>
+												<p class="mb-1" id="orderPlacementDate"></p>
+												<p class="mb-1" id="deliveryDate"></p>
+												<p class="mb-1" id="orderReceivalDate"></p>
 											</div>
 										</div>
 										<hr/>
 										<div class="row p-5">
 											<div class="col-md-12">
-												<table class="table chiTietTable"
+												<table class="table detailTable"
 													   style="text-align: center;">
 													<thead>
 													<tr>
@@ -238,7 +238,7 @@
 	<div class="row col-md-6">
 		<form class="capNhatTrangThaiForm" id="form">
 			<div>
-				<div class="modal fade" id="capNhatTrangThaiModal" tabindex="-1"
+				<div class="modal fade" id="modalUpdateStatus" tabindex="-1"
 					 role="dialog" aria-labelledby="exampleModalLabel"
 					 aria-hidden="true" data-backdrop="static" data-keyboard="false">
 					<div class="modal-dialog " role="document">
@@ -256,7 +256,7 @@
 								</div>
 								<div class="form-group">
 									<div class="col-md-12">
-										<table class="table chiTietTable"
+										<table class="table detailTable"
 											   style="text-align: center;">
 											<thead>
 											<tr>
@@ -278,18 +278,18 @@
 											<tbody>
 											</tbody>
 										</table>
-										<h4 id="tongTienXacNhan"
-											style="float: right; font-weight: bold;padding-right: 50px">abc</h4>
+										<h4 id="totalValue"
+											style="float: right; font-weight: bold;padding-right: 50px">total value money placeholder</h4>
 									</div>
 
 									<div>
 										<h5 id="ghiChu" style="font-weight: bold; padding-top: 10px">Note</h5>
-										<textarea rows="3" cols="75" id="ghiChuAdmin"></textarea>
+										<textarea rows="3" cols="50" id="ghiChuAdmin"></textarea>
 									</div>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-									<input class="btn btn-primary" id="btnXacNhan" type="button"
+									<input class="btn btn-primary" id="btnConfirm" type="button"
 										   value="Confirm"/>
 								</div>
 							</div>

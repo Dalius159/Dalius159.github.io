@@ -131,19 +131,19 @@ $(document).ready(function () {
 //		console.log(donHangId);
         const href = "http://localhost:8080/api/order/" + orderID;
         $.get(href, function (order) {
-            $('#maDonHang').text("Order ID: " + order.id);
-            $('#hoTenNguoiNhan').text("Receiver:  " + order.receiver);
-            $('#sdtNhanHang').text("Phone num.: " + order.receivedPhone);
-            $('#diaChiNhan').text("Address: " + order.receiveAddress);
-            $('#trangThaiDonHang').text("Order status: " + order.orderStatus);
-            $("#ngayDatHang").text("Order date: " + order.orderDate);
+            $('#orderID').text("Order ID: " + order.id);
+            $('#receveiverName').text("Receiver:  " + order.receiver);
+            $('#receveiverPhoneNum').text("Phone num.: " + order.receivedPhone);
+            $('#receveiverAddress').text("Address: " + order.receiveAddress);
+            $('#orderStatus').text("Order status: " + order.orderStatus);
+            $("#orderPlacementDate").text("Order date: " + order.orderDate);
 
             if (order.deliveryDate != null) {
-                $("#ngayShipHang").text("Delivery date: " + order.deliveryDate);
+                $("#deliveryDate").text("Delivery date: " + order.deliveryDate);
             }
 
             if (order.receivedDate != null) {
-                $("#ngayNhanHang").text("Retrieval date: " + order.receivedDate);
+                $("#orderReceivalDate").text("Retrieval date: " + order.receivedDate);
             }
 
             if (order.note != null) {
@@ -160,7 +160,7 @@ $(document).ready(function () {
 
             const check = order.orderStatus === "Completed" || order.orderStatus === "Waiting for approval";
             if (check) {
-                $('.chiTietTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Receiving quantity</th>');
+                $('.detailTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold">Receiving quantity</th>');
             }
             // add table
             let sum = 0; // order gross value
@@ -179,13 +179,13 @@ $(document).ready(function () {
                     sum += details.cost * details.orderQuantity;
                 }
 
-                $('.chiTietTable tbody').append(rowDetails);
+                $('.detailTable tbody').append(rowDetails);
                 no++;
             });
 
             $("#tongTien").text("Total: " + sum);
         });
-        $("#chiTietModal").modal();
+        $("#modalDetail").modal();
     });
 
 
@@ -259,19 +259,19 @@ $(document).ready(function () {
                     '<td>' + details.orderQuantity + '</td>' +
                     '<td>' + details.receivedQuantity + '</td>' +
                     '<td><input type="hidden" value="' + details.id + '" ></td>';
-                $('.chiTietTable tbody').append(rowDetails);
+                $('.detailTable tbody').append(rowDetails);
                 no++;
             });
             var sum = 0;
             $.each(order.orderDetailsList, function (i, details) {
                 sum += details.cost * details.receivedQuantity;
             });
-            $("#tongTienXacNhan").text("Total: " + sum);
+            $("#totalValue").text("Total: " + sum);
         });
-        $("#capNhatTrangThaiModal").modal();
+        $("#modalUpdateStatus").modal();
     });
 
-    $(document).on('click', '#btnXacNhan', function (event) {
+    $(document).on('click', '#btnConfirm', function (event) {
         event.preventDefault();
         postCompletionConfirm();
         resetData();
@@ -286,7 +286,7 @@ $(document).ready(function () {
             url: "http://localhost:8080/api/order/update?orderID=" + $("#idDonHangXacNhan").val() + "&adminNote=" + $("#ghiChuAdmin").val(),
             enctype: 'multipart/form-data',
             success: function (response) {
-                $("#capNhatTrangThaiModal").modal('hide');
+                $("#modalUpdateStatus").modal('hide');
                 alert("Confirming order completion successfully");
             },
             error: function (e) {
@@ -324,13 +324,13 @@ $(document).ready(function () {
     }
 
     // event when hiding detail modal
-    $('#chiTietModal,#capNhatTrangThaiModal').on('hidden.bs.modal', function (e) {
+    $('#modalDetail,#modalUpdateStatus').on('hidden.bs.modal', function (e) {
         e.preventDefault();
         $("#formDetail p").html(""); // reset p tags
         $("#capNhatTrangThaiForm h4").text("");
         $("#ghiChuAdmin").text("");
-        $('.chiTietTable #soLuongNhanTag').remove();
-        $('.chiTietTable tbody tr').remove();
+        $('.detailTable #soLuongNhanTag').remove();
+        $('.detailTable tbody tr').remove();
         $('.chiTietCapNhatTable tbody tr').remove();
     });
 });

@@ -379,7 +379,7 @@ $(document).ready(function () {
             $('.salesUnit').html("<span style='font-weight: bold'>Sold: </span>" + product.salesUnit);
         });
 
-        $('#chiTietModal').modal('show');
+        $('#modalDetail').modal('show');
 
     });
 
@@ -454,7 +454,7 @@ $(document).ready(function () {
     }
 
     // event - hide detail modal
-    $('#chiTietModal').on('hidden.bs.modal', function (e) {
+    $('#modalDetail').on('hidden.bs.modal', function (e) {
         e.preventDefault();
         $(".formDetail p").text(""); // reset p tag
     });

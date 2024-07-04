@@ -134,27 +134,27 @@ $(document).ready(function () {
         const orderID = $(this).parent().prev().children().val();
         const href = "http://localhost:8080/api/deliver/order/" + orderID;
         $.get(href, function (order) {
-            $('#maDonHang').text("Order ID: " + order.id);
-            $('#hoTenNguoiNhan').text("Receiver: " + order.receiver);
-            $('#sdtNhanHang').text("Phone number: " + order.receivedPhone);
-            $('#diaChiNhan').text("Address: " + order.receiveAddress);
-            $('#trangThaiDonHang').text("Order status: " + order.orderStatus);
-            $("#ngayDatHang").text("Order date: " + order.orderDate);
+            $('#orderID').text("Order ID: " + order.id);
+            $('#receveiverName').text("Receiver: " + order.receiver);
+            $('#receveiverPhoneNum').text("Phone number: " + order.receivedPhone);
+            $('#receveiverAddress').text("Address: " + order.receiveAddress);
+            $('#orderStatus').text("Order status: " + order.orderStatus);
+            $("#orderPlacementDate").text("Order date: " + order.orderDate);
 
             if (order.deliveryDate != null) {
-                $("#ngayShipHang").text("Delivery date: " + order.deliveryDate);
+                $("#deliveryDate").text("Delivery date: " + order.deliveryDate);
             }
 
             if (order.receivedDate != null) {
-                $("#ngayNhanHang").text("Retrieval date: " + order.receivedDate);
+                $("#orderReceivalDate").text("Retrieval date: " + order.receivedDate);
             }
 
             if (order.note != null) {
-                $("#ghiChu").text("Ghi chú: " + order.note);
+                $("#ghiChu").text("Note: " + order.note);
             }
 
             if (order.orderer != null) {
-                $("#nguoiDat").text("Người đặt: " + order.orderer.hoTen);
+                $("#nguoiDat").text("Ordering customer: " + order.orderer.hoTen);
             }
 
             if (order.shipper != null) {
@@ -163,7 +163,7 @@ $(document).ready(function () {
 
             const check = order.orderStatus === "Completed" || order.orderStatus === "Waiting for approval";
             if (check) {
-                $('.chiTietTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold"> SỐ LƯỢNG NHẬN </th>');
+                $('.detailTable').find('thead tr').append('<th id="soLuongNhanTag" class="border-0 text-uppercase small font-weight-bold"> SỐ LƯỢNG NHẬN </th>');
             }
             let sum = 0;
             let no = 1;
@@ -171,7 +171,7 @@ $(document).ready(function () {
                 console.log(oderDetails.orderQuantity);
                 let detailRow = '<tr>' +
                     '<td>' + no + '</td>' +
-                    '<td>' + oderDetails.sanPham.tenSanPham + '</td>' +
+                    '<td>' + oderDetails.product.productName + '</td>' +
                     '<td>' + oderDetails.cost + '</td>' +
                     '<td>' + oderDetails.orderQuantity + '</td>';
 
@@ -182,21 +182,21 @@ $(document).ready(function () {
                     sum += oderDetails.cost * oderDetails.orderQuantity;
                 }
 
-                $('.chiTietTable tbody').append(detailRow);
+                $('.detailTable tbody').append(detailRow);
                 no++;
             });
             $("#tongTienCapNhat").text("Total : " + sum);
         });
-        $("#chiTietModal").modal();
+        $("#modalDetail").modal();
     });
 
     // event khi ẩn modal chi tiết
-    $('#chiTietModal, #capNhatTrangThaiModal').on('hidden.bs.modal', function (e) {
+    $('#modalDetail, #modalUpdateStatus').on('hidden.bs.modal', function (e) {
         e.preventDefault();
         $("#chiTietForm p").text(""); // reset text thẻ p
         $("#capNhatTrangThaiForm h4").text(""); // reset text thẻ p
-        $('.chiTietTable tbody tr').remove();
-        $('.chiTietTable #soLuongNhanTag').remove();
+        $('.detailTable tbody tr').remove();
+        $('.detailTable #soLuongNhanTag').remove();
         $('.chiTietCapNhatTable tbody tr').remove();
     });
 
@@ -211,7 +211,7 @@ $(document).ready(function () {
             $.each(order.orderDetailsList, function (i, orderDetails) {
                 const detailRow = '<tr>' +
                     '<td>' + no + '</td>' +
-                    '<td>' + orderDetails.sanPham.tenSanPham + '</td>' +
+                    '<td>' + orderDetails.product.productName + '</td>' +
                     '<td>' + orderDetails.cost + '</td>' +
                     '<td>' + orderDetails.orderQuantity + '</td>' +
                     '<td><input type="number" class="soLuongNhan" style="width: 40px; text-align: center;" value ="' + orderDetails.orderQuantity + '" min="0" max="' + orderDetails.orderQuantity + '" ></td>' +
@@ -225,23 +225,23 @@ $(document).ready(function () {
             });
             $("#tongTienCapNhat").text("Total : " + sum);
         });
-        $("#capNhatTrangThaiModal").modal();
+        $("#modalUpdateStatus").modal();
     });
 
     //
     $(document).on('change', '.soLuongNhan', function (event) {
-        var table = $(".chiTietCapNhatTable tbody");
-        sum = 0;
+        const table = $(".chiTietCapNhatTable tbody");
+        let sum = 0;
         table.find('tr').each(function (i) {
-            donGia = $(this).find("td:eq(2)").text();
-            soLuongCapNhat = $(this).find("td:eq(4) input[type='number']").val();
-            sum += donGia * soLuongCapNhat;
+            let price = $(this).find("td:eq(2)").text();
+            let updatedQuantity = $(this).find("td:eq(4) input[type='number']").val();
+            sum += price * updatedQuantity;
         });
         $("#tongTienCapNhat").text("Total : " + sum);
 
     });
 
-    $(document).on('click', '#btnXacNhan', function (event) {
+    $(document).on('click', '#btnConfirm', function (event) {
         event.preventDefault();
         postUpdateOrder();
         resetData();
@@ -277,7 +277,7 @@ $(document).ready(function () {
             data: JSON.stringify(data),
             // dataType : 'json',
             success: function (response) {
-                $("#capNhatTrangThaiModal").modal('hide');
+                $("#modalUpdateStatus").modal('hide');
                 alert("Order status updattd");
             },
             error: function (e) {
