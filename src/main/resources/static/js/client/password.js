@@ -1,33 +1,41 @@
 function changePass() {
     const old = document.getElementById("old").value;
-    var new1 = document.getElementById("new1").value;
-    var new2 = document.getElementById("new2").value;
-    var flag = 0;
-    if (old.length == 0) {
+    const new1 = document.getElementById("new1").value;
+    const new2 = document.getElementById("new2").value;
+    let flag = 0;
+
+    // Clear previous warnings
+    document.getElementById("oldWarning").innerHTML = "";
+    document.getElementById("new1Warning").innerHTML = "";
+    document.getElementById("new2Warning").innerHTML = "";
+
+    if (old.length === 0) {
         flag = 1;
         document.getElementById("oldWarning").innerHTML = "Can't be empty";
     }
     if (new1.length < 8) {
         flag = 1;
-        document.getElementById("new1Warning").innerHTML = "Password length must have at least 8 charater";
+        document.getElementById("new1Warning").innerHTML = "Password length must have at least 8 characters";
     }
-    if (new1 != new2) {
+    if (new1 !== new2) {
         flag = 1;
-        document.getElementById("new2Warning").innerHTML = "Wrong confirm password";
+        document.getElementById("new2Warning").innerHTML = "Passwords do not match";
     }
-    if (flag == 1) {
+    if (flag === 1) {
         return;
     }
-    var object = {};
-    object.oldPassword = old;
-    object.newPassword = new1;
-    data = JSON.stringify(object)
+
+    const object = {
+        oldPassword: old,
+        newPassword: new1
+    };
+
     fetch('http://localhost:8080/updatePassword', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(object)
     })
         .then(response => {
             if (!response.ok) {
@@ -48,5 +56,4 @@ function changePass() {
             alert("Error: " + error.message);
             console.log("Error", error);
         });
-    ;
 }

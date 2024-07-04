@@ -50,37 +50,37 @@
             <br> <br>
             <br>
             <h3>
-                <b>Lịch sử mua hàng:</b>
+                <b>Order history:</b>
             </h3>
             <br>
             <table class="table-cart-checkout mytable">
                 <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Ngày mua</th>
-                    <th>Ngày giao hàng</th>
-                    <th>Ngày nhận hàng</th>
-                    <th>Sản phẩm</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái đơn hàng</th>
+                    <th>Order ID</th>
+                    <th>Order date</th>
+                    <th>Deliver date</th>
+                    <th>Receive date</th>
+                    <th>Product</th>
+                    <th>Total amount</th>
+                    <th>Order status</th>
                 </tr>
-                <tr th:each="donHang : ${list}">
-                    <td th:text="${donHang.id}" style="text-align: center"></td>
-                    <td th:text="${donHang.getOrderDate}" style="text-align: center"></td>
-                    <td th:text="${donHang.getDeliveryDate}" style="text-align: center"></td>
-                    <td th:text="${donHang.getReceivedDate}" style="text-align: center"></td>
+                <tr th:each="order : ${list}">
+                    <td th:text="${order.id}" style="text-align: center"></td>
+                    <td th:text="${order.getOrderDate}" style="text-align: center"></td>
+                    <td th:text="${order.getDeliveryDate}" style="text-align: center"></td>
+                    <td th:text="${order.getReceivedDate}" style="text-align: center"></td>
                     <td>
-            <span th:each="chiTiet : ${donHang.getOrderDetailsList}">
+            <span th:each="orderDetails : ${order.getOrderDetailsList}">
                 <p>
-                    <a th:href="@{'/sp?id=' + ${chiTiet.product.id}}" th:text="${chiTiet.product.getProductName}"></a>
+                    <a th:href="@{'/sp?id=' + ${orderDetails.product.id}}" th:text="${orderDetails.product.getProductName}"></a>
                     <br>
                 </p>
-                <p th:if="${donHang.getOrderStatus == 'Đang chờ giao' or donHang.getOrderStatus == 'Đang giao'}">Số lượng: <span th:text="${chiTiet.getOrderQuantity}"></span></p>
-                <p th:unless="${donHang.getOrderStatus == 'Đang chờ giao' or donHang.getOrderStatus == 'Đang giao'}">Số lượng: <span th:text="${chiTiet.getReceivedQuantity}"></span></p>
+                <p th:if="${order.getOrderStatus == 'Waiting for Delivery' or order.getOrderStatus == 'Delivering'}">Quantity: <span th:text="${orderDetails.getOrderQuantity}"></span></p>
+                <p th:unless="${order.getOrderStatus == 'Waiting for Delivery' or order.getOrderStatus == 'Delivering'}">Quantity: <span th:text="${orderDetails.getReceivedQuantity}"></span></p>
                 <hr>
             </span>
                     </td>
-                    <td class="tongGiaTri" th:text="${tongGiaTri}" style="text-align: center"></td>
-                    <td th:text="${donHang.getOrderStatus}" style="text-align: center"></td>
+                    <td class="totalCost" th:text="${totalCost}" style="text-align: center"></td>
+                    <td th:text="${order.getOrderStatus}" style="text-align: center"></td>
                 </tr>
             </table>
         </div>
@@ -102,25 +102,25 @@
 
             <div class="modal-body">
                 <div class="form-group">
-                    <label style="line-height: 2">Họ tên khách hàng:</label><br>
+                    <label style="line-height: 2">Customer fullname:</label><br>
                     <label id="nameWarning" style="color: red"></label>
                     <input class="form-control" id="name" name="name" type="text" th:value="${user.getFullName}">
                 </div>
                 <div class="form-group">
-                    <label style="line-height: 2">Số điện thoại:</label><br>
+                    <label style="line-height: 2">Phone Number:</label><br>
                     <label id="phoneWarning" style="color: red"></label>
                     <input class="form-control" id="phone" name="phone" type="text" th:value="${user.getPhoneNumber}">
                 </div>
                 <div class="form-group">
-                    <label style="line-height: 2">Địa chỉ:</label><br>
+                    <label style="line-height: 2">Address:</label><br>
                     <label id="addressWarning" style="color: red"></label>
                     <textarea rows="3" cols="1" class="form-control" id="address" th:text="${user.getAddress}"></textarea>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" th:onclick="|changeInformation()|">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" th:onclick="|changeInformation()|">Update</button>
             </div>
         </div>
     </div>
@@ -139,24 +139,24 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label style="line-height: 2">Mật khẩu cũ*:</label><br>
+                    <label style="line-height: 2">Old password*:</label><br>
                     <label id="oldWarning" style="color: red"></label>
                     <input class="form-control" id="old" name="old" type="password">
                 </div>
                 <div class="form-group">
-                    <label style="line-height: 2">Mật khẩu mới*:</label><br>
+                    <label style="line-height: 2">New password*:</label><br>
                     <label id="new1Warning" style="color: red"></label>
                     <input class="form-control" id="new1" name="new1" type="password">
                 </div>
                 <div class="form-group">
-                    <label style="line-height: 2">Xác nhận lại mật khẩu mới*:</label><br>
+                    <label style="line-height: 2">Confirm new password*:</label><br>
                     <label id="new2Warning" style="color: red"></label>
                     <input class="form-control" id="new2" name="new2" type="password">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" th:onclick="|changePass()|">Đổi mật khẩu</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" th:onclick="|changePass()|">Update</button>
             </div>
         </div>
     </div>
