@@ -129,7 +129,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 500px;
+    max-width: 400px;
 }
 
 .pagination {
@@ -137,8 +137,7 @@ body {
     justify-content: center;
     padding-left: 0;
     list-style: none;
-    border-radius: 0.25rem;
-    background-color: #081b29;
+    border-radius: 0.35rem;
 }
 
 .pagination .page-item {

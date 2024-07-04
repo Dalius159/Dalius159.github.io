@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-        lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
   <link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
   <title>LeoLap - Checkout</title>
-
+  <!-- Tải jQuery trước Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" th:href="@{/css/checkout.css}">
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".check").forEach(function (element) {
@@ -17,100 +18,137 @@
       document.querySelectorAll(".total").forEach(function (element) {
         element.innerHTML = accounting.formatMoney(element.textContent);
       });
+
+      document.getElementById('submit').addEventListener('click', function (event) {
+        var paymentGate = document.getElementById('paymentGate').value;
+        if (paymentGate === 'vietqr') {
+          var totalCost = parseFloat(document.getElementById('orderTotal').textContent.replace(/[^0-9.-]+/g, ""));
+          var totalCostVND = totalCost * 25;
+          var userId = document.getElementById('userId').value;
+          var now = new Date();
+          var formattedDate = now.getFullYear().toString() +
+                  ('0' + (now.getMonth() + 1)).slice(-2) +
+                  ('0' + now.getDate()).slice(-2) +
+                  ('0' + now.getHours()).slice(-2) +
+                  ('0' + now.getMinutes()).slice(-2) +
+                  ('0' + now.getSeconds()).slice(-2);
+          var orderDescription = userId + ' ' + formattedDate;
+          var qrUrl = 'https://img.vietqr.io/image/vietinbank-108872276458-compact2.png?amount=' + totalCostVND + '&addInfo=' + encodeURIComponent(orderDescription);
+
+          // Save QR URL and details to localStorage
+          localStorage.setItem('qrUrl', qrUrl);
+          localStorage.setItem('orderDescription', orderDescription);
+          localStorage.setItem('totalCostVND', totalCostVND);
+
+          // Redirect to processPayment page
+          window.location.href = "/process_payment";
+        }
+      });
     });
+
   </script>
 </head>
 <body>
 
 <div th:insert="~{client/include/homeHeader}"></div>
 
-
-<form method="post" th:action="@{/complete-order}" th:object="${order}">
-
-  <div sec:authorize="isAuthenticated()" class="col-md-3">
-    <br>
-    <p class="border-p" style="line-height:1.5;"><b>Customer info</b></p>
-    <p style="line-height:2;">Full name</p>
-    <input size="27" th:value="${user.fullName}" th:disabled="true">
-    <p style="line-height:2;">Email address</p>
-    <input size="27" th:value="${user.email}" th:disabled="true">
-    <p style="line-height:2;">Phone number</p>
-    <input size="27" th:value="${user.phoneNumber}" th:disabled="true">
-    <p style="line-height:2;">Home address</p>
-    <textarea rows="5" cols="29" th:value="${user.address}" th:disabled="true"></textarea>
-    <br><br>
+<div class="container checkout-container">
+  <div class="checkout-header">
+    <h2>Checkout</h2>
   </div>
 
-  <div class="col-md-3">
-    <br>
-    <p class="border-p" style="line-height:1.5;"><b>Delivery Information</b></p>
-    <p style="line-height:2;">Receiver's name</p>
-    <input size="27" th:field="*{receiver}" th:id="receiver" required="required">
-    <p style="line-height:2;">Phone number</p>
-    <input size="27" th:field="*{receivedPhone}" th:id="receivedPhone" required="required">
-    <p style="line-height:2;">Address</p>
-    <textarea rows="5" cols="29" th:field="*{receiveAddress}" th:id="receiveAddress" required="required"></textarea>
-    <br><br>
-    <div class="alert" th:id="alertMsg"
-         th:style="${#fields.hasErrors('receiver') or #fields.hasErrors('receivedPhone') or #fields.hasErrors('receiveAddress')} ? '' : 'display:none;'">
-      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-      Please provide all information
+  <form method="post" th:action="@{/process_order}" th:object="${order}">
+    <input type="hidden" id="userId" th:value="${user.id}"> <!-- Hidden input to hold user.id -->
+    <div class="row">
+      <div class="col-md-4">
+        <h4 class="section-title">Customer Info</h4>
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" class="form-control" th:value="${user.fullName}" th:disabled="true">
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" class="form-control" th:value="${user.email}" th:disabled="true">
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="text" class="form-control" th:value="${user.phoneNumber}" th:disabled="true">
+        </div>
+        <div class="form-group">
+          <label>Home address</label>
+          <input class="form-control"  th:value="${user.address}" th:disabled="true">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <h4 class="section-title">Delivery Information</h4>
+        <div class="form-group">
+          <label>Receiver's name</label>
+          <input type="text" class="form-control" th:field="*{receiver}" th:id="receiver" required>
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="text" class="form-control" th:field="*{receivedPhone}" th:id="receivedPhone" required>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <textarea class="form-control" rows="3" th:field="*{receiveAddress}" th:id="receiveAddress" required></textarea>
+        </div>
+        <div class="alert alert-danger" th:id="alertMsg"
+             th:style="${#fields.hasErrors('receiver') or #fields.hasErrors('receivedPhone') or #fields.hasErrors('receiveAddress')} ? '' : 'display:none;'">
+          <button type="button" class="close" onclick="this.parentElement.style.display='none';">&times;</button>
+          Please provide all information
+        </div>
+        <input type="hidden" th:field="*{totalCost}" th:id="totalCost" >
+      </div>
+
+      <div class="col-md-4">
+        <h4 class="section-title">Cart</h4>
+        <table class="table table-striped table-cart-checkout">
+          <thead>
+          <tr>
+            <th>Picture</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="product : ${cart}">
+            <td>
+              <img th:src="@{/product_images/{id}.png(id=${product.id})}" th:alt="${product.id}" class="fix-size-img">
+            </td>
+            <td th:text="${product.productName}"></td>
+            <td>
+              <div class="check" th:text="${product.price}"></div>
+              <div th:text="' x ' + ${quantity[product.id]}"></div>
+            </td>
+            <td>
+              <div class="total" th:text="${product.price * quantity[product.id]}"></div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <p class="mt-3">Total value of order: <b id="orderTotal"></b></p>
+        <div class="form-group">
+          <label for="paymentGate">Choose payment gate</label>
+          <select class="form-control" id="paymentGate" name="paymentGate" required>
+            <option value="">Select...</option>
+            <option value="vietqr">VietQR</option>
+            <!-- Add other payment gates here -->
+          </select>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-danger" type="submit" id="submit">Purchase</button>
+          <a th:href="@{/cart}" class="btn btn-primary">Return to cart</a>
+        </div>
+      </div>
     </div>
-    <br><br>
-    <input type="hidden" th:id="totalCost" th:field="*{totalCost}">
-  </div>
-
-  <div class="col-md-6">
-    <br>
-    <p class="border-p" style="line-height:1.5;"><b>Cart</b></p>
-    <br>
-
-    <table class="table-cart-checkout mytable">
-      <thead>
-      <tr>
-        <th>Picture</th>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Total</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="product : ${cart}" style="text-align: center;">
-        <td>
-          <img th:src="@{/product_images/${product.id}.png}" th:alt="${product.id}"
-               class="img-reponsive fix-size-img">
-        </td>
-        <td style="color:green" th:text="${product.productName}"></td>
-        <td class="donGia">
-          <div class="check" style="display: inline-block;" th:text="${product.price}"></div>
-          <div style="display: inline-block;" th:text="' x ' + ${quantity[product.id]}"></div>
-        </td>
-        <td>
-          <div class="total" th:text="${product.price * quantity[product.id]}"></div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-
-    <br>
-    <p>Total value of order: <b id="orderTotal"></b></p>
-    <br>
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-
-    <div>
-      <button class="btn btn-danger pull-center" type="submit" id="submit">Purchase</button>
-      <a th:href="@{/cart}" class="btn btn-primary">Return to cart</a>
-    </div>
-    <br><br>
-  </div>
-
-</form>
-
+  </form>
+</div>
 <script th:src="@{/js/client/checkout.js}"></script>
-
 
 <div th:insert="~{client/include/homeFooter}"></div>
 
 </body>
-
 </html>

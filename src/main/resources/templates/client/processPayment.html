@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script th:src="@{js/accounting.min.js}"></script>
+	<link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
+	<title>LeoLap - Checkout</title>
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+			document.querySelectorAll('.donGia .check').forEach(function (element) {
+				element.innerHTML = accounting.formatMoney(element.textContent);
+			});
+			document.querySelectorAll('.total').forEach(function (element) {
+				element.innerHTML = accounting.formatMoney(element.textContent);
+			});
+
+			// Display QR code
+			const qrUrl = localStorage.getItem('qrUrl');
+			if (qrUrl) {
+				const qrCodeContainer = document.getElementById('qrCodeContainer');
+				qrCodeContainer.innerHTML = '<p><b>Please pay via this QR code:</b></p><div class="qr-code"><img src="' + qrUrl + '" alt="QR Code for Payment" class="img-responsive"></div>';
+				qrCodeContainer.innerHTML += '<p><b>QR URL: </b><a href="' + qrUrl + '" target="_blank">' + qrUrl + '</a></p>';
+			}
+
+			let checkPaidInterval;
+			setTimeout(() => { checkPaidInterval = setInterval(checkPaid, 1000); }, 20000);
+			let isSuccess = false;
+
+			async function checkPaid() {
+				if (isSuccess) {
+					saveOrder();
+					document.querySelector('.btn-continue').style.display = 'inline-block';
+					clearInterval(checkPaidInterval); // Dừng vòng lặp checkPaid
+					return alert("Payment successful!");
+				} else {
+					const totalCostVND = parseFloat(localStorage.getItem('totalCostVND'));
+					const orderDescription = localStorage.getItem('orderDescription');
+					try {
+						const response = await fetch("https://script.google.com/macros/s/AKfycbw_ezT6yiTUYiAR5YGHmzasrMNxdR13d6uQE3TBM1eHK3ToI9KEq_IavEdvxIgGPYQx/exec");
+						const data = await response.json();
+						const lastPaid = data.data[data.data.length - 1];
+						const lastPrice = parseFloat(lastPaid["Giá trị"]);
+						const lastContent = lastPaid["Mô tả"];
+						if (lastPrice >= totalCostVND && lastContent.includes(orderDescription)) {
+							isSuccess = true;
+						} else {
+							console.log("Payment failed!");
+						}
+					} catch (error) {
+						console.error("Payment Error!", error);
+					}
+				}
+			}
+
+			function saveOrder() {
+				const orderForm = document.getElementById('hiddenOrderForm');
+				const formData = new FormData(orderForm);
+				fetch('/save_order', {
+					method: 'POST',
+					body: formData
+				}).then(response => {
+					if (response.ok) {
+						console.log("Order saved successfully");
+					} else {
+						console.error("Failed to save order");
+					}
+				}).catch(error => {
+					console.error("Error:", error);
+				});
+			}
+		});
+	</script>
+	<link rel="stylesheet" th:href="@{/css/processPayment.css}">
+</head>
+<body>
+<div th:insert="~{/client/include/homeHeader}"></div>
+<form id="hiddenOrderForm" th:action="@{/process_order}" style="display: none;">
+	<input type="hidden" name="orderId" th:value="${order.getId()}">
+	<input type="hidden" name="receiver" th:value="${order.getReceiver()}">
+	<input type="hidden" name="receivedPhone" th:value="${order.getReceivedPhone()}">
+	<input type="hidden" name="receiveAddress" th:value="${order.getReceiveAddress()}">
+	<!-- Thêm các thông tin cần thiết khác vào đây -->
+</form>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 center">
+			<br>
+			<div class="order-details">
+				<p><b>ORDER DETAILS</b></p>
+				<p><b>Order ID: </b><span th:text="${order.getId()}"></span></p>
+				<p><b>Recipient's Name: </b><span th:text="${order.getReceiver()}"></span></p>
+				<p><b>Phone Number: </b><span th:text="${order.getReceivedPhone()}"></span></p>
+				<p><b>Address: </b><span th:text="${order.getReceiveAddress()}"></span></p>
+				<p>At <span th:text="${order.getOrderDate()}"></span>, we received an order with the following products:</p>
+			</div>
+			<br>
+			<table class="table-cart-checkout">
+				<thead>
+				<tr>
+					<th><b>Picture</b></th>
+					<th><b>Product name</b></th>
+					<th><b>Price</b></th>
+					<th><b>Total</b></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="product : ${cart}">
+					<td>
+						<img th:src="@{/product_images/{id}.png(id=${product.id})}" th:alt="${product.id}" class="fix-size-img">
+					</td>
+					<td th:text="${product.productName}"></td>
+					<td>
+						<div class="check" th:text="${product.price}"></div>
+						<div th:text="' x ' + ${quantity[product.id]}"></div>
+					</td>
+					<td>
+						<div class="total" th:text="${product.price * quantity[product.id]}"></div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<br>
+			<div id="qrCodeContainer" class="center"></div>
+			<p>We sincerely thank you for trusting and using our services!</p>
+			<br>
+			<a th:href="@{/}" class="btn-continue">Continue shopping</a>
+		</div>
+	</div>
+</div>
+<div th:insert="~{client/include/homeFooter}"></div>
+</body>
+</html>

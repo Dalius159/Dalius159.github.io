@@ -52,7 +52,6 @@ public class CheckOutController {
 			quantity.put(c.getProduct().getId(), (long) c.getQuantity());
 		}
 
-//      TODO: fix typo
 		model.addAttribute("cart", productList);
 		model.addAttribute("quantity", quantity);
 		model.addAttribute("user", currentUser);
@@ -61,40 +60,52 @@ public class CheckOutController {
 		return "client/checkout";
 	}
 
-	@PostMapping("/complete-order")
-	public String completeOrder(@ModelAttribute("order") Orders order, HttpServletRequest req, HttpServletResponse response, Model model) {
-		SaveOrder(order, req, response, model, (byte) 0);
-
-		return "redirect:/thankyou";
+	@PostMapping("/process_order")
+	public String processOrder(@ModelAttribute("order") Orders order) {
+		return "redirect:/process_payment";
 	}
 
-	@GetMapping(value = "/thankyou")
-	public String thankYouPage(HttpServletRequest req, Model model) {
+	@PostMapping("/save_order")
+	@ResponseBody
+	public String saveOrderAjax(@ModelAttribute("order") Orders order, HttpServletRequest req, HttpServletResponse response, Model model) {
+		SaveOrder(order, req, model, (byte) 0);
+		return "Order saved successfully";
+	}
+
+	@GetMapping(value = "/process_payment")
+	public String processPaymentPage(HttpServletRequest req, Model model) {
 		Users currentUser = getSessionUser(req);
-		Orders order = orderService.findLatestOrderByOrdererID(currentUser.getId());
 		Map<Long, Long> quantity = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 
-		List<OrderDetails> orderDetails = order.getOrderDetailsList();
-		for (OrderDetails c : orderDetails) {
+		Cart g = cartService.getCartByUser(currentUser);
+
+		List<CartPointer> cartPointerList = cartPointerService.getCartPointerByCart(g);
+
+		for (CartPointer c : cartPointerList) {
 			productList.add(c.getProduct());
-			quantity.put(c.getProduct().getId(), (long) c.getOrderQuantity());
+			quantity.put(c.getProduct().getId(), (long) c.getQuantity());
 		}
 
-		model.addAttribute("order", order);
 		model.addAttribute("cart", productList);
 		model.addAttribute("quantity", quantity);
+		model.addAttribute("user", currentUser);
+		model.addAttribute("order", new Orders());
 
-		return "client/thankYou";
+		return "client/processPayment";
 	}
 
-	public void SaveOrder(Orders order, HttpServletRequest req, HttpServletResponse response, Model model, byte status) {
-		if (status == 1) {order.setNote("Paid");} else {order.setNote("Cash-on-delivery payment");}
+	public void SaveOrder(Orders order, HttpServletRequest req, Model model, byte status) {
+		if (status == 1) {
+			order.setNote("Paid");
+		} else {
+			order.setNote("Cash-on-delivery payment");
+		}
 		order.setOrderDate(new Date());
 		order.setOrderStatus("Waiting for Delivery");
 
 		Users currentUser = getSessionUser(req);
-		Map<Long, Long> quanity = new HashMap<>();
+		Map<Long, Long> quantity = new HashMap<>();
 		List<Product> productList = new ArrayList<>();
 		List<OrderDetails> listDetail = new ArrayList<>();
 
@@ -112,7 +123,7 @@ public class CheckOutController {
 			listDetail.add(detailDH);
 
 			productList.add(c.getProduct());
-			quanity.put(c.getProduct().getId(), (long) c.getQuantity());
+			quantity.put(c.getProduct().getId(), (long) c.getQuantity());
 		}
 
 		orderDetailsService.save(listDetail);
@@ -120,12 +131,11 @@ public class CheckOutController {
 		cleanUpAfterCheckOut(req);
 		model.addAttribute("order", order);
 		model.addAttribute("cart", productList);
-		model.addAttribute("quanity", quanity);
+		model.addAttribute("quantity", quantity);
 	}
 
 	public void cleanUpAfterCheckOut(HttpServletRequest request) {
 		Users currentUser = getSessionUser(request);
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		Cart g = cartService.getCartByUser(currentUser);
 		List<CartPointer> c = cartPointerService.getCartPointerByCart(g);

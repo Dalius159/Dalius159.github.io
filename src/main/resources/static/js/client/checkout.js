@@ -1,4 +1,4 @@
-calculateOrder()
+calculateOrder();
 
 function calculateOrder() {
 	const element = document.getElementsByClassName("total");
@@ -9,8 +9,6 @@ function calculateOrder() {
 	const element2 = document.getElementById("orderTotal");
 	element2.innerHTML = accounting.formatMoney(res);
 
-	const element3 = document.getElementById("tongGiaTri");
-	element3.setAttribute("value", res);
 	if (res === 0) {
 		document.getElementById("submit").disabled = true;
 	}

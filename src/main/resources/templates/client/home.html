@@ -4,18 +4,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="icon" type="image/png" th:href="@{/images/Lion.png}">
 	<title>  -  LeoLap - </title>
-
 	<link rel="stylesheet" th:href="@{/glide/glide.core.min.css}">
 	<link rel="stylesheet" th:href="@{/glide/glide.theme.min.css}">
-	<script th:src="@{/glide/glide.min.js}"></script>
 </head>
 <body>
 
 <div th:insert="~{/client/include/homeHeader}"></div>
-
-
-<script th:src="@{/js/client/add2cart.js}"></script>
-<script th:src="@{/js/client/homeLatestProduct.js}"></script>
 <!--start-image-slider---->
 <div class="wrap">
 	<div class="image-slider">
@@ -36,15 +30,6 @@
 	</div>
 	<!--End-image-slider---->
 </div>
-
-<script>
-    new Glide('#glide1', {
-        type: 'carousel',
-        autoplay: 2000, // Adjust autoplay speed (in milliseconds) as needed
-        hoverpause: true // Pause autoplay on hover
-    }).mount();
-</script>
-
 
 <div class="clear"></div>
 <div class="wrap">
@@ -85,9 +70,29 @@
 	<ul id="category"></ul>
 </div>
 <div class="clear"></div>
-
-
 <div th:insert="~{client/include/homeFooter}"></div>
+
+<!-- Include jQuery if not already included -->
+<script th:src="@{'https://code.jquery.com/jquery-3.6.0.min.js'}"></script>
+<script th:src="@{/glide/glide.min.js}"></script>
+<script th:src="@{/js/client/add2cart.js}"></script>
+<script th:src="@{/js/client/homeLatestProduct.js}"></script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		var sliderElement = document.querySelector('#glide1');
+		if (sliderElement) {
+			// Initialize Glide.js slider
+			new Glide(sliderElement, {
+				type: 'carousel',
+				autoplay: 2000, // Adjust autoplay speed (in milliseconds) as needed
+				hoverpause: true // Pause autoplay on hover
+			}).mount();
+		} else {
+			console.error('Slider element not found');
+		}
+	});
+</script>
 
 </body>
 </html>

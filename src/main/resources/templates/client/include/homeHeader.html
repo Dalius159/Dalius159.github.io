@@ -6,29 +6,12 @@
 <head>
 	<!--many other boilerplate in /include/ use libraries here, do not remove-->
 	<link rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}">
-	<script th:src="@{/bootstrap/bootstrap.min.js}"></script>
 	<link rel="stylesheet" th:href="@{/css/style.css}" type="text/css" media="all"/>
 	<link th:href="@{'//fonts.googleapis.com/css?family=Londrina+Solid|Coda+Caption:800|Open+Sans'}" rel="stylesheet"
 		  type="text/css">
-	<script th:src="@{/js/accounting.min.js}"></script>
-	<script th:src="@{/glide/glide.min.js}"></script>
 	<link rel="stylesheet" th:href="@{/glide/glide.core.min.css}" type="text/css"/>
 	<link rel="stylesheet" th:href="@{/glide/glide.theme.min.css}" type="text/css"/>
 
-
-	<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Glide.js slider
-            new Glide('#slider1', {
-                type: 'carousel',
-                perView: 1,
-                autoplay: 3000,
-                hoverpause: true,
-                animationDuration: 600,
-                breakpoints: {1600: {perView: 1}}
-            }).mount();
-        });
-	</script>
 	<title>HTML Boilerplate Page</title>
 </head>
 <body>
@@ -90,6 +73,12 @@
 	</div>
 </div>
 
+<!-- Include jQuery before Bootstrap -->
+<script th:src="@{'https://code.jquery.com/jquery-3.6.0.min.js'}"></script>
+<script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+<script th:src="@{/js/accounting.min.js}"></script>
+<script th:src="@{/glide/glide.min.js}"></script>
 <script th:src="@{/js/client/category.js}"></script>
+
 </body>
 </html>
