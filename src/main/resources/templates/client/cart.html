@@ -55,24 +55,24 @@
         <td>Total</td>
         <td>Delete</td>
       </tr>
-      <tr th:each="sanpham, loop : ${cart}" class="cart_line" th:id="'item' + ${sanpham.id}">
+      <tr th:each="product, loop : ${cart}" class="cart_line" th:id="'item' + ${product.id}">
         <td th:text="${loop.index+1}"></td>
-        <td><img th:src="@{/product_images/{id}.png(id=${sanpham.id})}" th:alt="${sanpham.id}"
+        <td><img th:src="@{/product_images/{id}.png(id=${product.id})}" th:alt="${product.id}"
                  style="width: 150px" class="cart-img"></td>
         <td style="text-align: center; margin-top: -52px;">
-          <p class="cart_ten"><a th:href="@{/sp(id=${sanpham.id})}" th:text="${sanpham.getProductName}"></a></p>
-          <p class="cart_masanpham">Product ID:<span th:text="${sanpham.id}"></span></p>
-          <p class="">Guarantee:<span th:text="${sanpham.getWarrantyInfor}"></span></p>
+          <p class="cart_ten"><a th:href="@{/sp(id=${product.id})}" th:text="${product.getProductName}"></a></p>
+          <p class="cart_maproduct">Product ID:<span th:text="${product.id}"></span></p>
+          <p class="">Warranty:<span th:text="${product.getWarrantyInfor}"></span></p>
         </td>
-        <td class="covertPriceProduct" th:text="${sanpham.getPrice}"></td>
+        <td class="covertPriceProduct" th:text="${product.getPrice}"></td>
         <td>
-          <input class="input_num_cart" type="number" th:value="${quantity[sanpham.id]}" min="1"
-                 th:onchange="'changeQuantity(' + ${sanpham.id} + ', this.value, ' + ${sanpham.getPrice} + ')'"/>
+          <input class="input_num_cart" type="number" th:value="${quantity[product.id]}" min="1"
+                 th:onchange="'changeQuantity(' + ${product.id} + ', this.value, ' + ${product.getPrice} + ')'"/>
         </td>
-        <td><b><span class="total" th:id="'item' + ${sanpham.id} + '_total'"
-                     th:text="${sanpham.getPrice * quantity[sanpham.id]}"></span></b></td>
+        <td><b><span class="total" th:id="'item' + ${product.id} + '_total'"
+                     th:text="${product.getPrice * quantity[product.id]}"></span></b></td>
         <td class="cart-img">
-          <a class="btn btn-danger" th:onclick="'deleteFromCart(' + ${sanpham.id} + ')'"
+          <a class="btn btn-danger" th:onclick="'deleteFromCart(' + ${product.id} + ')'"
              onclick="return false;"><span class="glyphicon glyphicon-trash"></span></a>
         </td>
       </tr>
