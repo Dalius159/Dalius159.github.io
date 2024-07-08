@@ -3,17 +3,16 @@ package Website.LaptopShop.Controller;
 import Website.LaptopShop.Entities.Users;
 import Website.LaptopShop.Services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 @Controller
@@ -21,10 +20,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes("loggedInUser")
 public class DeliverController {
 
-
     @Autowired
     private UserService userService;
-
 
     @ModelAttribute("loggedInUser")
     public Users loggedInUser() {
@@ -32,8 +29,9 @@ public class DeliverController {
         return userService.findByEmail(auth.getName());
     }
 
-    @GetMapping(value= {"", "/order"})
-    public String deliverPage(Model model) {
+    @GetMapping(value = {"", "/order"})
+    public String deliverPage(Model model, @RequestParam(value = "status", required = false) String status) {
+        model.addAttribute("status", status);
         return "deliver/manageOrderDelivery";
     }
 

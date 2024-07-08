@@ -17,7 +17,7 @@
 	<h3 class="page-header text-white ">Product Management</h3>
 
 	<div class="form-group form-inline">
-		<label for="categoryDropdown">New</label>
+		<label for="categoryDropdown" class="text-white">New</label>
 		<select id="categoryDropdown" class="form-control">
 			<option th:each="category : ${categoryList}" th:value="${category.id}"
 					th:text="${category.categoryName}"></option>
@@ -35,7 +35,7 @@
 		</div>
 
 		<div class="form-group">
-			<label for="manufacturer text-white">Manufacturer:</label>
+			<label for="manufacturer" class="text-white">Manufacturer:</label>
 			<select class="form-control" name="manufacturerID" id="manufacturer">
 				<option value="">All Manufacturers</option>
 				<option th:each="manufacturer : ${manufacturerList}" th:value="${manufacturer.id}"

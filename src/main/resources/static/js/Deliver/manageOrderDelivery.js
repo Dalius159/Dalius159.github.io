@@ -26,13 +26,13 @@ $(document).ready(function () {
                         });
                     }
                     let orderRow = '<tr>' +
-                        '<td>' + order.id + '</td>' +
-                        '<td>' + order.receiver + '</td>' +
-                        '<td>' + order.orderStatus + '</td>' +
-                        '<td>' + orderGrossValue + '</td>' +
-                        '<td>' + order.orderDate + '</td>' +
-                        '<td>' + order.deliveryDate + '</td>' +
-                        '<td>' + order.receivedDate + '</td>' +
+                        '<td class="text-white">' + order.id + '</td>' +
+                        '<td class="text-white">' + order.receiver + '</td>' +
+                        '<td class="text-white">' + order.orderStatus + '</td>' +
+                        '<td class="text-white">' + orderGrossValue + '</td>' +
+                        '<td class="text-white">' + order.orderDate + '</td>' +
+                        '<td class="text-white">' + order.deliveryDate + '</td>' +
+                        '<td class="text-white">' + order.receivedDate + '</td>' +
                         '<td>' + '<input type="hidden" class="donHangId" value=' + order.id + '>' + '</td>' +
                         '<td><button class="btn btn-primary btnChiTiet" >Detail</button>';
                     if (order.orderStatus == "Delivering") {
